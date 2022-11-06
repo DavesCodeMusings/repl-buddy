@@ -83,3 +83,11 @@ Still, it's better than nothing. If you like the functionality, add the line `fr
 ## I tried it and I found a bug. What now?
 Create an issue in GitHub and I'll see if I can fix it. Though please be patient as I am a developer team of one.
 
+## A note about time...
+Functions like `ls()` and `touch()` depend on accurate system time the file modification timestamp. The `date()` function is another obvious one. If you dont set the clock when your microcontroller boots, it's going to think the date-time is Jan 1, 2000 at midnight.
+
+You can remedy this by setting the time in boot.py:
+```
+from ntptime import settime
+settime()
+```
