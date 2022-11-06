@@ -60,7 +60,7 @@ from repl_buddy import *
 
 The following functions will be available to you:
 
-* `cat(FILENAME)` display contents of FILENAME
+* `cat(FILE1, [FILE2], ...)` display contents of one or more files
 * `cd([DIRNAME])` change directory to DIRNAME or / if no parameter given
 * `date([SECONDS])` display the current date and time or the date given by SECONDS from the Python epoch 
 * `grep(PATTERN, FILENAME)` search for PATTERN in FILENAME and print matching lines
