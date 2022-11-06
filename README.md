@@ -72,7 +72,9 @@ The following functions will be available to you:
 * `rmdir(DIRNAME)` delete DIRNAME, but only if it's empty
 * `touch(FILENAME)` create a new, empty file or change the modification time stamp on an existing file
 
-REPL Buddy is not a shell, so you'll still have to supply parameters as quoted strings, but it does make things a little more convenient when managing your flash file system. Most of the functions should be pretty self-explanitory from their names and descriptions above. Some, llike `cd()` and `ls()` can be called with or without parameters. Those that require parameters will give a brief usage statement if you don't supply what they need.
+REPL Buddy is not a shell, so you'll still have to supply parameters as quoted strings, but it does make things a little more convenient when managing your flash file system.
+
+Most functions should be pretty self-explanitory from their names and descriptions above. Some, llike `cd()` and `ls()` can be called with or without parameters. Those that require parameters will give a brief usage statement if you don't supply what they need.
 
 All of REPL Buddy's functions are severely limited when compared to their *nix shell counterparts. For example, `cat()` can only dump the contents of a single file, `rm()` has no recursive option, grep can only search text files, etc.
 
