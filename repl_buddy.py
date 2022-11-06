@@ -12,15 +12,20 @@ def read_file_chunk(file):
             return
 
 # Functions named after their *nix shell counterparts
-def cat(filename=None):
-    try:
-        stat = os.stat(filename)
-    except:
-        print('File not found')
+def cat(*file_list):
+    if (len(file_list) == 0):
+        print("usage: cat('FILE1', [FILE2], ...)")
     else:
-        with open(filename) as file:
-            for chunk in read_file_chunk(file):
-                print(chunk, end='')
+        for file in file_list:
+            try:
+                stat = os.stat(file)
+            except:
+                print('File not found:', file)
+            else:
+                with open(file) as f:
+                    for chunk in read_file_chunk(f):
+                        print(chunk, end='')
+                print()
 
 def cd(dirname='/'):
     os.chdir(dirname)
