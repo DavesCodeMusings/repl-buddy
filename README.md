@@ -76,7 +76,7 @@ REPL Buddy is not a shell, so you'll still have to supply parameters as quoted s
 
 Most functions should be pretty self-explanitory from their names and descriptions above. Some, llike `cd()` and `ls()` can be called with or without parameters. Those that require parameters will give a brief usage statement if you don't supply what they need.
 
-All of REPL Buddy's functions are severely limited when compared to their *nix shell counterparts. For example, `cat()` can only dump the contents of a single file, `rm()` has no recursive option, grep can only search text files, etc.
+All of REPL Buddy's functions are severely limited when compared to their *nix shell counterparts. For example, `rm()` has no recursive option, `grep() can only search text files, etc. There's also no way to pipe commands together or redirect output.
 
 Still, it's better than nothing. If you like the functionality, add the line `from repl_buddy import *` to your boot.py.
 
