@@ -86,7 +86,7 @@ Create an issue in GitHub and I'll see if I can fix it. Though please be patient
 ## A note about time...
 Functions like `ls()` and `touch()` depend on accurate system time for the file modification timestamp. The `date()` function is another obvious one. If you don't set the clock when your microcontroller boots, it's going to think the date-time is Jan 1, 2000 at midnight.
 
-You can remedy this by setting the time in boot.py:
+You can remedy this by setting the time in boot.py, like so:
 ```
 from ntptime import settime
 settime()
