@@ -75,13 +75,17 @@ def ls(path='.'):
 
         print('total', len(list))
         if (len(list) != 0):
-            print('type  size  mtime         name')
+            print('type    size  mtime         name')
             for entry in list:
                 properties = os.stat(parent + entry)
-                type = 'd' if (properties[0] & 0x4000) else '-'
-                size = properties[6]
+                if (properties[0] & 0x4000):  # entry is a directory
+                    type = 'd'
+                    size = 0
+                else:
+                    type = '-'
+                    size = properties[6]
                 mtime = date(properties[8], short=True)
-                print('{} {:8d}  {:>11s}  {}'.format(type, size, mtime, entry))
+                print('{} {:10d}  {:>11s}  {}'.format(type, size, mtime, entry))
 
 def mkdir(dirname=None):
     if (dirname == None):
