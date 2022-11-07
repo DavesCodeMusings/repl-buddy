@@ -52,13 +52,13 @@ print('Hello Cleveland!')
 _Che bella!_
 
 ## How do I use it?
-It's easy. Just grab `repl_buddy.py` from this repository and save it to `/lib/repl_buddy.py` on your MicroPython device. Then import the functions like this:
+It's easy. First, you import the functions like this:
 
 ```
 from repl_buddy import *
 ```
 
-The following functions will be available to you:
+Then the following functions will be available to you:
 
 * `cat(FILE1, [FILE2], ...)` display contents of one or more files
 * `cd([DIRNAME])` change directory to DIRNAME or / if no parameter given
