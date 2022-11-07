@@ -1,5 +1,5 @@
-import time
 import os
+from time import localtime
 from re import search
 from sys import stdin
 
@@ -33,7 +33,7 @@ def cd(dirname='/'):
 
 def date(seconds=None, short=False):
     months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-    datetime = time.localtime(seconds)
+    datetime = localtime(seconds)
     month = months[datetime[1] - 1]
     day = datetime[2]
     day_space = ' ' if day < 10 else ''
