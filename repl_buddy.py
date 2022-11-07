@@ -4,7 +4,7 @@ from re import search
 from sys import stdin
 
 # Helper function for cat() to avoid eating RAM with big buffers
-def read_file_chunk(file):
+def _read_file_chunk(file):
     while True:
         chunk = file.read(64)  # small chunks to avoid out of memory errors
         if chunk:
@@ -24,7 +24,7 @@ def cat(*file_list):
                 print('File not found:', file)
             else:
                 with open(file) as f:
-                    for chunk in read_file_chunk(f):
+                    for chunk in _read_file_chunk(f):
                         print(chunk, end='')
                 print()
 
