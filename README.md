@@ -80,6 +80,19 @@ All of REPL Buddy's functions are severely limited when compared to their *nix s
 
 Still, it's better than nothing. If you like the functionality, add the line `from repl_buddy import *` to your boot.py.
 
+## How do I install it?
+Use the MicroPython MIP tool, like this:
+```
+mpremote mip install github:DavesCodeMusings/thimble
+```
+
+Or on Windows:
+```
+py -m mpremote mip install github:DavesCodeMusings/thimble
+```
+
+Or download directly from https://raw.githubusercontent.com/DavesCodeMusings/repl-buddy/main/repl_buddy.py and save to your device's /lib directory.
+
 ## I tried it and I found a bug. What now?
 Create an issue in GitHub and I'll see if I can fix it. Though please be patient as I am a developer team of one.
 
