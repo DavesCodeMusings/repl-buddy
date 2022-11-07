@@ -68,6 +68,7 @@ Then the following functions will be available to you:
 * `mkdir(DIRNAME)` create the directory given by DIRNAME
 * `mv(SOURCE, DEST)` rename SOURCE to DEST or if DEST is a directory, move SOURCE there
 * `pwd()` show the present working directory path
+* `recv([FILENAME],[EOF]) receive text from STDIN and write to FILENAME until EOF is entered on a line by itself.
 * `rm(FILENAME)` delete FILENAME
 * `rmdir(DIRNAME)` delete DIRNAME, but only if it's empty
 * `touch(FILENAME)` create a new, empty file or change the modification time stamp on an existing file
@@ -80,7 +81,14 @@ All of REPL Buddy's functions are severely limited when compared to their *nix s
 
 Still, it's better than nothing. If you like the functionality, add the line `from repl_buddy import *` to your boot.py.
 
-## How do I install it?
+### Some important notes about `recv()`
+Using `recv()` from Thonny results in an extra blank line after every line of text for some reason. This does not happen when using `mpremote`.
+
+When using mpremote, there is no echo to the terminal from REPL, so you are flying blind when pasting. If you use Windows Terminal, it will let you preview what's being pasted. But, it will also try to be helpful and truncate extra newlines from the end. This makes it hard to put EOF on a line by itself. Alway press ENTER before and after typing your EOF sequence and you'll be fine.
+
+Using PuTTY to connect to the REPL over a serial port offers the best experience for uploading files using `recv()`. There's still no echo of what you paste, but you don't have to worry about PuTTY truncating extra newlines. Just paste the contents of the clipboard and enter EOF at the end.
+
+## How do I install REPL Buddy?
 Use the MicroPython MIP tool, like this:
 ```
 mpremote mip install github:DavesCodeMusings/repl-buddy
