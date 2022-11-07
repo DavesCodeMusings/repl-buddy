@@ -68,7 +68,7 @@ Then the following functions will be available to you:
 * `mkdir(DIRNAME)` create the directory given by DIRNAME
 * `mv(SOURCE, DEST)` rename SOURCE to DEST or if DEST is a directory, move SOURCE there
 * `pwd()` show the present working directory path
-* `recv([FILENAME],[EOF]) receive text from STDIN and write to FILENAME until EOF is entered on a line by itself.
+* `recv([FILENAME],[EOF])` receive text from STDIN and write to FILENAME until EOF is entered on a line by itself.
 * `rm(FILENAME)` delete FILENAME
 * `rmdir(DIRNAME)` delete DIRNAME, but only if it's empty
 * `touch(FILENAME)` create a new, empty file or change the modification time stamp on an existing file
