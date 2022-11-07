@@ -138,7 +138,7 @@ def rmdir(dirname=None):
     if (dirname == None):
         print("usage: rmdir('DIRNAME')")
     else:
-        os.remove(dirname)
+        os.rmdir(dirname)
 
 def touch(filename=None):
     if (filename == None):
