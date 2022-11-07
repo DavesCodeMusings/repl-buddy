@@ -83,12 +83,12 @@ Still, it's better than nothing. If you like the functionality, add the line `fr
 ## How do I install it?
 Use the MicroPython MIP tool, like this:
 ```
-mpremote mip install github:DavesCodeMusings/thimble
+mpremote mip install github:DavesCodeMusings/repl-buddy
 ```
 
 Or on Windows:
 ```
-py -m mpremote mip install github:DavesCodeMusings/thimble
+py -m mpremote mip install github:DavesCodeMusings/repl-buddy
 ```
 
 Or download directly from https://raw.githubusercontent.com/DavesCodeMusings/repl-buddy/main/repl_buddy.py and save to your device's /lib directory.
