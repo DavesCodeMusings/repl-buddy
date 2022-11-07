@@ -37,7 +37,7 @@ _Mmm, so smooth and satisfying!_
 ```
 import os
 import re
-#$@%&^!
+?#@*&%!
 requests.get('stackoverflow.com')
 ```
 
