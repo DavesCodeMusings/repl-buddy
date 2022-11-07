@@ -1,6 +1,7 @@
 import time
 import os
 from re import search
+from sys import stdin
 
 # Helper function for cat() to avoid eating RAM with big buffers
 def read_file_chunk(file):
@@ -105,6 +106,19 @@ def mv(src_path=None, dest_path=None):
 
 def pwd():
     print(os.getcwd())
+
+def recv(filename='recv.txt', eof_marker='EOF'):
+    with open(filename, 'wb') as f:
+        num_lines = 0
+        eof = None
+        while (not eof):
+            for line in stdin:
+                if (line == eof_marker + '\n'):
+                    print(num_lines)
+                    eof = True
+                    break
+                f.write(line)
+                num_lines += 1
 
 def rm(filename=None):
     if (filename == None):
