@@ -47,6 +47,18 @@ def date(seconds=None, short=False):
     else:
         return '{} {}{}, {} {}{}:{}{}'.format(month, day_space, day, year, hour_zero, hour, minute_zero, minute)
 
+def df(path='.'):
+    properties = os.statvfs(path)
+    fragment_size = properties[1]
+    blocks_total = properties[2]
+    blocks_available = properties[4]
+    size_kb = int(blocks_total * fragment_size / 1024)
+    avail_kb = int(blocks_available * fragment_size / 1024)
+    used_kb = size_kb - avail_kb
+    percent_used = round(100 * used_kb / size_kb)
+    print('Filesystem      Size      Used     Avail   Use%')
+    print('flash      {:8d}K {:8d}K {:8d}K   {:3d}%'.format(size_kb, used_kb, avail_kb, percent_used))
+
 def grep(pattern=None, filename=None):
     if (pattern == None or filename == None):
         print("usage: grep('PATTERN', 'FILENAME')")

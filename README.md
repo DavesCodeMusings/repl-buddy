@@ -62,7 +62,8 @@ Then the following functions will be available to you:
 
 * `cat(FILE1, [FILE2], ...)` display contents of one or more files
 * `cd([DIRNAME])` change directory to DIRNAME or / if no parameter given
-* `date([SECONDS])` display the current date and time or the date given by SECONDS from the Python epoch 
+* `date([SECONDS])` display the current date and time or the date given by SECONDS from the Python epoch
+* `df([PATH])` show file system usage statistics for PATH or the current working dir if PATH is not specified
 * `grep(PATTERN, FILENAME)` search for PATTERN in FILENAME and print matching lines
 * `ls(FILENAME | DIRNAME)` list the properties of FILENAME or the properties of all files in DIRNAME
 * `mkdir(DIRNAME)` create the directory given by DIRNAME
