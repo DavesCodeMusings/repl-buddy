@@ -85,7 +85,7 @@ Still, it's better than nothing. If you like the functionality, add the line `fr
 `recv()` has no direct analog in the *nix shell. It takes the place of using `cat<<EOF >filename.txt` to send STDIN to a file. It offers a convenient way to upload text files (including Python code) to the microcontroller by pasting into the terminal. Using just `recv()` with no parameters writes to a file called recv.txt and is terminated by the string 'EOF' on a line by itself. EOF can be changed by supplying `eof_marker` as a named parameter or as a second positional parameter. For example, `recv('settings.json', '---DONE---') will stop accepting input and close the file when '---DONE---' is entered on a line by itself.
 
 #### Caveats
-Using `recv()` from Thonny results in an extra blank line after every line of text for some reason. This does not happen when using `mpremote`.
+Using `recv()` from Thonny results in an extra blank line after every line of text for some reason. This does not happen when using mpremote.
 
 When using mpremote, there is no echo to the terminal from REPL, so you are flying blind when pasting. If you use Windows Terminal, it will let you preview what's being pasted. But, it will also try to be helpful and truncate extra newlines from the end. This makes it hard to put EOF on a line by itself. Alway press ENTER before and after typing your EOF sequence into Windows Terminal and you'll be fine.
 
