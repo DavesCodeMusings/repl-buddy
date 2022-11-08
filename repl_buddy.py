@@ -15,7 +15,7 @@ def _read_file_chunk(file):
 # Functions named after their *nix shell counterparts
 def cat(*file_list):
     if (len(file_list) == 0):
-        print("usage: cat('FILE1', [FILE2], ...)")
+        print("Usage: cat('FILE1', [FILE2], ...)")
     else:
         for file in file_list:
             try:
@@ -32,20 +32,20 @@ def cd(dirname='/'):
     os.chdir(dirname)
 
 def date(seconds=None, short=False):
-    months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     datetime = localtime(seconds)
     month = months[datetime[1] - 1]
     day = datetime[2]
     day_space = ' ' if day < 10 else ''
     year = datetime[0]
     hour = datetime[3]
-    hour_zero = '0' if hour < 10 else ''
+    hour_padding = '0' if hour < 10 else ''
     minute = datetime[4]
-    minute_zero = '0' if minute < 10 else ''
+    minute_padding = '0' if minute < 10 else ''
     if (short == True):
-        return '{} {}{} {}{}:{}{}'.format(month, day_space,day, hour_zero, hour, minute_zero, minute)        
+        return '{} {}{} {}{}:{}{}'.format(month, day_space, day, hour_padding, hour, minute_padding, minute)        
     else:
-        return '{} {}{}, {} {}{}:{}{}'.format(month, day_space, day, year, hour_zero, hour, minute_zero, minute)
+        return '{} {}{}, {} {}{}:{}{}'.format(month, day_space, day, year, hour_padding, hour, minute_padding, minute)
 
 def df(path='.'):
     properties = os.statvfs(path)
@@ -61,7 +61,7 @@ def df(path='.'):
 
 def grep(pattern=None, filename=None):
     if (pattern == None or filename == None):
-        print("usage: grep('PATTERN', 'FILENAME')")
+        print("Usage: grep('PATTERN', 'FILENAME')")
     else:
         with open(filename) as file:
             while (True):
@@ -87,7 +87,7 @@ def ls(path='.'):
 
         print('total', len(list))
         if (len(list) != 0):
-            print('type    size  mtime         name')
+            print('Type    Size  MTime         Name')
             for entry in list:
                 properties = os.stat(parent + entry)
                 if (properties[0] & 0x4000):  # entry is a directory
@@ -101,13 +101,13 @@ def ls(path='.'):
 
 def mkdir(dirname=None):
     if (dirname == None):
-        print("usage: mkdir('DIRNAME')")
+        print("Usage: mkdir('DIRNAME')")
     else:
         os.mkdir(dirname)
 
 def mv(src_path=None, dest_path=None):
     if (src_path == None or dest_path == None):
-        print("usage: mv('SOURCE', 'DEST')")
+        print("Usage: mv('SOURCE', 'DEST')")
     else:
         try:    # Does dest_path exist?
             stat = os.stat(dest_path)
@@ -138,7 +138,7 @@ def recv(filename='recv.txt', eof_marker='EOF'):
 
 def rm(filename=None):
     if (filename == None):
-        print("usage: rm('FILENAME')")
+        print("Usage: rm('FILENAME')")
     elif (filename == '*'):
         dir_list = os.listdir()
         for file in dir_list:
@@ -148,13 +148,13 @@ def rm(filename=None):
 
 def rmdir(dirname=None):
     if (dirname == None):
-        print("usage: rmdir('DIRNAME')")
+        print("Usage: rmdir('DIRNAME')")
     else:
         os.rmdir(dirname)
 
 def touch(filename=None):
     if (filename == None):
-        print("usage: touch('FILENAME')")
+        print("Usage: touch('FILENAME')")
     else:
         file = open(filename, 'w')
         file.close()
