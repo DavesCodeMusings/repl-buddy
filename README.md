@@ -62,6 +62,7 @@ Then the following functions will be available to you:
 
 * `cat(FILE1, [FILE2], ...)` display contents of one or more files
 * `cd([DIRNAME])` change directory to DIRNAME or / if no parameter given
+* `clear()` move cursor to top left corner and clear the screen (ANSI terminals only)
 * `date([SECONDS])` display the current date and time or the date given by SECONDS from the Python epoch
 * `df([PATH])` show file system usage statistics for PATH or the current working dir if PATH is not specified
 * `grep(PATTERN, FILENAME)` search for PATTERN in FILENAME and print matching lines

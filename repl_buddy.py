@@ -1,7 +1,7 @@
 import os
 from time import localtime
 from re import search
-from sys import stdin
+from sys import stdin, stdout
 
 # Helper function for cat() to avoid eating RAM with big buffers
 def _read_file_chunk(file):
@@ -30,6 +30,10 @@ def cat(*file_list):
 
 def cd(dirname='/'):
     os.chdir(dirname)
+
+def clear():
+    stdout.write('\x1B[H') # Move cursor to col 1, row 1
+    stdout.write('\x1B[J') # clear from cursor to end
 
 def date(seconds=None, short=False):
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
