@@ -73,6 +73,7 @@ Then the following functions will be available to you:
 * `recv([FILENAME], [EOF])` receive text from STDIN and write to FILENAME until EOF is entered on a line by itself
 * `rm(FILENAME)` delete FILENAME
 * `rmdir(DIRNAME)` delete DIRNAME, but only if it's empty
+* `run(FILENAME)` execute the Python script given by FILENAME 
 * `touch(FILENAME)` create a new, empty file or change the modification time stamp on an existing file
 
 REPL Buddy is not a shell, so you'll still have to supply parameters as quoted strings, but it does make things a little more convenient when managing your flash file system.

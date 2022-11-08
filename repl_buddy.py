@@ -156,6 +156,12 @@ def rmdir(dirname=None):
     else:
         os.rmdir(dirname)
 
+def run(filename=None):
+    if (filename == None):
+        print('Usage: run(FILENAME)')
+    else:
+        exec(open(filename).read())
+
 def touch(filename=None):
     if (filename == None):
         print("Usage: touch('FILENAME')")
