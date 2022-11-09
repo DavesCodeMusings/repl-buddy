@@ -1,6 +1,7 @@
 {
   "urls": [
+    ["ansi.py", "github:DavesCodeMusings/repl-buddy/ansi.py"],
     ["repl_buddy.py", "github:DavesCodeMusings/repl-buddy/repl_buddy.py"]
   ],
-  "version": "1.4"
+  "version": "1.5"
 }
