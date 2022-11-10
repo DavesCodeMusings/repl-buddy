@@ -3,7 +3,9 @@ from select import poll, POLLIN
 from ansi import ANSI
 
 class Femto:
+    CTRL_D = '\x04'
     CTRL_R = '\x12'
+    CTRL_U = '\x15'
     CTRL_W = '\x17'
     CTRL_X = '\x18'
 
@@ -42,16 +44,25 @@ class Femto:
         del self._buffer
         self._buffer = ''
 
-    def dump(self):
+    def print(self, start=0, stop=None, line_length=None):
         """
-        Print buffer lines.
+        Display a range of buffer lines, possibly truncated to length.
         """
-        for line in self._buffer:
-            stdout.write(line)
+        if (start > len(self._buffer)):
+            start = len(self._buffer) - 1
+
+        if (stop == None or stop > len(self._buffer)):
+            stop = len(self._buffer)
+
+        for line_num in range(start, stop):
+            if (line_length == None):
+                stdout.write(self._buffer[line_num])
+            else:
+                stdout.write(self._buffer[line_num][:line_length])
 
     def list(self):
         """
-        Print buffer with line numbers.
+        Print entire buffer with line numbers.
         """
         if (len(self._buffer) < 10):
             line_num_field = '{:>1d} '
@@ -111,30 +122,38 @@ class Femto:
         Navigate and edit buffer based on user input.
         """
         terminal = ANSI()
+        self.print(0, terminal.rows - 1, terminal.cols)
 
-        current_line_num = 1
-        for line in self._buffer:
-            if (current_line_num > terminal.rows):
-                break
-            stdout.write(line[:terminal.cols])
-            current_line_num += 1
-
-        commands = '[R]ead  [W]rite  e[X]it'
-        padding = ' ' * (terminal.cols - len(commands) - len(self._filename))
-        self._set_status(terminal, commands + padding + self._filename)
+        buffer_line_start = 0
 
         poll_obj = poll()
         poll_obj.register(stdin, POLLIN)
         while (True):
             ch = stdin.read(1) if poll_obj.poll(1) else None
             if (ch != None):
-                if (ch == Femto.CTRL_X):
-                    break
-                elif (ch == Femto.CTRL_W):
-                    self._filename = self._get_input(terminal, 'Filename:')
-                    self.write(self._filename)
+                if (ch == Femto.CTRL_D):
+                    buffer_line_start += terminal.rows
+                    if (buffer_line_start > len(self._buffer)):
+                        buffer_line_start = len(self._buffer)
+                    cursor_save = terminal.cursor
+                    terminal.clear()
+                    self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
+                    terminal.cursor = cursor_save
                 elif (ch == Femto.CTRL_R):
                     self._filename = self._get_input(terminal, 'Filename:')
                     self.read(self._filename)
+                if (ch == Femto.CTRL_U):
+                    buffer_line_start -= terminal.rows
+                    if (buffer_line_start < 0):
+                        buffer_line_start = 0
+                    cursor_save = terminal.cursor
+                    terminal.clear()
+                    self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
+                    terminal.cursor = cursor_save
+                elif (ch == Femto.CTRL_W):
+                    self._filename = self._get_input(terminal, 'Filename:')
+                    self.write(self._filename)
+                elif (ch == Femto.CTRL_X):
+                    break
                 else:
                     stdout.write(ch)
