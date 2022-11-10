@@ -39,10 +39,8 @@ class ANSI:
 
     def __init__(self):
         """
-        Reset terminal and try to determine its dimensions in rows and columns.
+        Reset terminal.
         """
-        self.set_cursor((999,999))                # Move cursor far past screen limits.
-        self.rows, self.cols = self.get_cursor()  # It will stop at (last row, last col).
         self.reset()
 
     def clear(self):
@@ -102,9 +100,13 @@ class ANSI:
 
     def reset(self):
         """
-        Clear screen. Move cursor to (1,1). Set color to white on black.
+        Clear screen. Probe for terminal dimensions. Move cursor to (1,1).
         """
         stdout.write(ANSI.ESC + 'c')
+        self.cursor = (999,999)                   # Move cursor far past screen limits.
+        self.rows, self.cols = self.get_cursor()  # It will stop at (last row, last col).
+        self.cursor = (1,1)
+
 
     def set_style(self, style=NORMAL):
         stdout.write(ANSI.CSI + str(style) + 'm')
