@@ -8,46 +8,82 @@ class Femto:
     CTRL_X = '\x18'
 
     def __init__(self, filename=None):
-        self.buffer = ''
-        self.filename = ''
+        self._buffer = ''
+        self._filename = ''
         if (filename != None):
             self.read(filename)
 
     def read(self, filename):
+        """
+        Load file contents into buffer.
+        """
         try:
             with open(filename) as f:
-                self.buffer = f.readlines()
-            self.filename = filename
+                self._buffer = f.readlines()
+            self._filename = filename
         except Exception as ex:
-            self.filename = ''
+            self._filename = ''
             print(ex)
 
-    def dump(self):
-        for line in self.buffer:
-            stdout.write(line)
+    def write(self, filename=None):
+        """
+        Save contents of buffer to filename.
+        """
+        if (filename == None):
+            filename = self._filename
+        with open(filename, 'w') as f:
+            for line in self._buffer:
+                f.write(line)
 
     def purge(self):
-        del self.buffer
-        self.buffer = ''
+        """
+        Release the buffer memory and start with a fresh one.
+        """
+        del self._buffer
+        self._buffer = ''
+
+    def dump(self):
+        """
+        Print buffer lines.
+        """
+        for line in self._buffer:
+            stdout.write(line)
+
+    def list(self):
+        """
+        Print buffer with line numbers.
+        """
+        if (len(self._buffer) < 10):
+            line_num_field = '{:>1d} '
+        elif (len(self._buffer) < 100):
+            line_num_field = '{:>2d} '
+        elif (len(self._buffer) < 1000):
+            line_num_field = '{:>3d} '
+        else:
+            line_num_field = '{:>4d} '
+        current_line_num = 1
+        for line in self._buffer:
+            stdout.write(line_num_field.format(current_line_num))
+            stdout.write(line)
+            current_line_num += 1
 
     def page(self, page_length=20):
-        line_num = 1
-        for line in self.buffer:
-            if (line_num % page_length == 0):
+        """
+        Print buffer, pausing every so many lines.
+        """
+        current_line_num = 1
+        for line in self._buffer:
+            if (current_line_num % page_length == 0):
                 ch = stdin.read(1)
                 if (ch == 'q' or ch == 'Q'):
                     break
             stdout.write(line)
-            line_num += 1
+            current_line_num += 1
             
-    def write(self, filename=None):
-        if (filename == None):
-            filename = self.filename
-        with open(filename, 'w') as f:
-            for line in self.buffer:
-                f.write(line)
-
-    def _show_status(self, terminal, message):
+    def _set_status(self, terminal, message):
+        """
+        Show message on the last line in inverse color scheme.
+        """
         cursor_save = terminal.cursor
         terminal.cursor = (terminal.rows, 1)
         terminal.style = ANSI.INVERSE
@@ -56,19 +92,36 @@ class Femto:
         terminal.style = ANSI.NORMAL
         terminal.cursor = cursor_save
 
+    def _get_input(self, terminal, prompt):
+        """
+        Show prompt and capture user reply.
+        """
+        cursor_save = terminal.cursor
+        terminal.cursor = (terminal.rows, 1)
+        terminal.style = ANSI.INVERSE
+        stdout.write(' ' * (terminal.cols))
+        terminal.cursor = (terminal.rows, 1)
+        reply = input(prompt)
+        terminal.style = ANSI.NORMAL
+        terminal.cursor = cursor_save
+        return reply
+
     def visual(self):
+        """
+        Navigate and edit buffer based on user input.
+        """
         terminal = ANSI()
 
-        line_num = 1
-        for line in self.buffer:
-            if (line_num > terminal.rows):
+        current_line_num = 1
+        for line in self._buffer:
+            if (current_line_num > terminal.rows):
                 break
             stdout.write(line[:terminal.cols])
-            line_num += 1
+            current_line_num += 1
 
-        commands = 'CTRL+R Read  CTRL+W Write  CTRL+X Exit'
-        padding = ' ' * (terminal.cols - len(commands) - len(self.filename))
-        self._show_status(terminal, commands + padding + self.filename)
+        commands = '[R]ead  [W]rite  e[X]it'
+        padding = ' ' * (terminal.cols - len(commands) - len(self._filename))
+        self._set_status(terminal, commands + padding + self._filename)
 
         poll_obj = poll()
         poll_obj.register(stdin, POLLIN)
@@ -78,6 +131,10 @@ class Femto:
                 if (ch == Femto.CTRL_X):
                     break
                 elif (ch == Femto.CTRL_W):
-                    self.write()
+                    self._filename = self._get_input(terminal, 'Filename:')
+                    self.write(self._filename)
+                elif (ch == Femto.CTRL_R):
+                    self._filename = self._get_input(terminal, 'Filename:')
+                    self.read(self._filename)
                 else:
                     stdout.write(ch)
