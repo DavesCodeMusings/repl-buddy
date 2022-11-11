@@ -3,12 +3,6 @@ from select import poll, POLLIN
 from ansi import ANSI
 
 class Femto:
-    CTRL_D = '\x04'
-    CTRL_R = '\x12'
-    CTRL_U = '\x15'
-    CTRL_W = '\x17'
-    CTRL_X = '\x18'
-
     def __init__(self, filename=None):
         self._buffer = ''
         self._filename = ''
@@ -46,7 +40,7 @@ class Femto:
 
     def print(self, start=0, stop=None, line_length=None):
         """
-        Display a range of buffer lines, possibly truncated to length.
+        Display a range of buffer lines, possibly truncated to fit.
         """
         if (start > len(self._buffer)):
             start = len(self._buffer) - 1
@@ -97,10 +91,7 @@ class Femto:
         """
         cursor_save = terminal.cursor
         terminal.cursor = (terminal.rows, 1)
-        terminal.style = ANSI.INVERSE
-        message += ' ' * (terminal.cols - len(message))  # pad to fill terminal width
         stdout.write(message)
-        terminal.style = ANSI.NORMAL
         terminal.cursor = cursor_save
 
     def _get_input(self, terminal, prompt):
@@ -109,14 +100,26 @@ class Femto:
         """
         cursor_save = terminal.cursor
         terminal.cursor = (terminal.rows, 1)
-        terminal.style = ANSI.INVERSE
-        stdout.write(' ' * (terminal.cols))
-        terminal.cursor = (terminal.rows, 1)
+        terminal.clear_line()
         reply = input(prompt)
-        terminal.style = ANSI.NORMAL
         terminal.cursor = cursor_save
         return reply
 
+    def read_file_dialog(self, terminal):
+        self._filename = self._get_input(terminal, 'Read filename: ')
+        self.read(self._filename)
+
+    def write_file_dialog(self, terminal):
+        if (self._filename):
+            prompt = 'Write filename [{}]: '.format(self._filename)
+            filename = self._get_input(terminal, prompt)
+            if (filename != ''):
+                self._filename = filename
+        else:
+            prompt = 'Write as filename: '
+            self._filename = self._get_input(terminal, prompt)
+        self.write(self._filename)
+        
     def visual(self):
         """
         Navigate and edit buffer based on user input.
@@ -125,35 +128,53 @@ class Femto:
         self.print(0, terminal.rows - 1, terminal.cols)
 
         buffer_line_start = 0
-
-        poll_obj = poll()
-        poll_obj.register(stdin, POLLIN)
         while (True):
-            ch = stdin.read(1) if poll_obj.poll(1) else None
-            if (ch != None):
-                if (ch == Femto.CTRL_D):
-                    buffer_line_start += terminal.rows
-                    if (buffer_line_start > len(self._buffer)):
-                        buffer_line_start = len(self._buffer)
-                    cursor_save = terminal.cursor
-                    terminal.clear()
-                    self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
-                    terminal.cursor = cursor_save
-                elif (ch == Femto.CTRL_R):
-                    self._filename = self._get_input(terminal, 'Filename:')
-                    self.read(self._filename)
-                if (ch == Femto.CTRL_U):
-                    buffer_line_start -= terminal.rows
-                    if (buffer_line_start < 0):
-                        buffer_line_start = 0
-                    cursor_save = terminal.cursor
-                    terminal.clear()
-                    self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
-                    terminal.cursor = cursor_save
-                elif (ch == Femto.CTRL_W):
-                    self._filename = self._get_input(terminal, 'Filename:')
-                    self.write(self._filename)
-                elif (ch == Femto.CTRL_X):
-                    break
-                else:
-                    stdout.write(ch)
+            ch = terminal.get_key()
+            if (ch == 'CUF'):
+                cursor_row, cursor_col = terminal.cursor
+                cursor_col += 1
+                if (cursor_col > terminal.cols):
+                    cursor_col = terminal.cols
+                terminal.cursor = cursor_row, cursor_col
+            elif (ch == 'CUB'):
+                cursor_row, cursor_col = terminal.cursor
+                cursor_col -= 1
+                if (cursor_col < 1):
+                    cursor_col = 1
+                terminal.cursor = cursor_row, cursor_col
+            elif (ch == 'CUU'):
+                cursor_row, cursor_col = terminal.cursor
+                cursor_row -= 1
+                if (cursor_row < 1):
+                    cursor_row = 1
+                terminal.cursor = cursor_row, cursor_col
+            elif (ch == 'CUD'):
+                cursor_row, cursor_col = terminal.cursor
+                cursor_row += 1
+                if (cursor_row > terminal.rows):
+                    cursor_row = terminal.rows
+                terminal.cursor = cursor_row, cursor_col
+            elif (ch == 'PgDn' or ch == '^D'):
+                buffer_line_start += terminal.rows
+                if (buffer_line_start > len(self._buffer)):
+                    buffer_line_start = len(self._buffer)
+                cursor_save = terminal.cursor
+                terminal.clear(clear_scrollback=True)
+                self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
+                terminal.cursor = cursor_save
+            elif (ch == 'PgUp' or ch == '^U'):
+                buffer_line_start -= terminal.rows
+                if (buffer_line_start < 0):
+                    buffer_line_start = 0
+                cursor_save = terminal.cursor
+                terminal.clear(clear_scrollback=True)
+                self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
+                terminal.cursor = cursor_save
+            elif (ch == '^R'):
+                self.read_file_dialog(terminal)
+            elif (ch == '^W'):
+                self.write_file_dialog(terminal)
+            elif (ch == '^X'):
+                break
+            else:
+                stdout.write(ch)
