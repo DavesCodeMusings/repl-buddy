@@ -84,14 +84,30 @@ class Femto:
                     break
             stdout.write(line)
             current_line_num += 1
-            
+
+    def _set_title(self, terminal, message):
+        """
+        Show message on the top line in inverse color scheme.
+        """
+        cursor_save = terminal.cursor
+        terminal.cursor = (1, 1)
+        terminal.clear_line()
+        starting_column = int((terminal.cols - len(message)) / 2)
+        terminal.cursor = (1, starting_column)
+        terminal.style = ANSI.DIM
+        stdout.write(message)
+        terminal.style = ANSI.NORMAL
+        terminal.cursor = cursor_save
+
     def _set_status(self, terminal, message):
         """
-        Show message on the last line in inverse color scheme.
+        Show message on the bottom line in inverse color scheme.
         """
         cursor_save = terminal.cursor
         terminal.cursor = (terminal.rows, 1)
+        terminal.style = ANSI.DIM
         stdout.write(message)
+        terminal.style = ANSI.NORMAL
         terminal.cursor = cursor_save
 
     def _get_input(self, terminal, prompt):
@@ -105,11 +121,22 @@ class Femto:
         terminal.cursor = cursor_save
         return reply
 
-    def read_file_dialog(self, terminal):
+    def _refresh_screen(self, terminal, buffer_line=0):
+        terminal.clear(clear_scrollback=True)
+        if (self._filename):
+            self._set_title(terminal, self._filename)
+        else:
+            self._set_title(terminal, 'empty buffer')
+        terminal.cursor = (2,1)
+        self.print(buffer_line, buffer_line + (terminal.rows - 2), terminal.cols)
+        self._set_status(terminal, '[^R]ead  [^W]rite  e[^X]it')
+
+    def _read_file_dialog(self, terminal):
         self._filename = self._get_input(terminal, 'Read filename: ')
         self.read(self._filename)
+        self._refresh_screen(terminal)
 
-    def write_file_dialog(self, terminal):
+    def _write_file_dialog(self, terminal):
         if (self._filename):
             prompt = 'Write filename [{}]: '.format(self._filename)
             filename = self._get_input(terminal, prompt)
@@ -125,9 +152,10 @@ class Femto:
         Navigate and edit buffer based on user input.
         """
         terminal = ANSI()
-        self.print(0, terminal.rows - 1, terminal.cols)
 
-        buffer_line_start = 0
+        buffer_line = 0
+        self._refresh_screen(terminal, buffer_line)
+
         while (True):
             ch = terminal.get_key()
             if (ch == 'CUF'):
@@ -155,25 +183,19 @@ class Femto:
                     cursor_row = terminal.rows
                 terminal.cursor = cursor_row, cursor_col
             elif (ch == 'PgDn' or ch == '^D'):
-                buffer_line_start += terminal.rows
-                if (buffer_line_start > len(self._buffer)):
-                    buffer_line_start = len(self._buffer)
-                cursor_save = terminal.cursor
-                terminal.clear(clear_scrollback=True)
-                self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
-                terminal.cursor = cursor_save
+                buffer_line += (terminal.rows -2)
+                if (buffer_line > len(self._buffer)):
+                    buffer_line = len(self._buffer)
+                self._refresh_screen(terminal, buffer_line)
             elif (ch == 'PgUp' or ch == '^U'):
-                buffer_line_start -= terminal.rows
-                if (buffer_line_start < 0):
-                    buffer_line_start = 0
-                cursor_save = terminal.cursor
-                terminal.clear(clear_scrollback=True)
-                self.print(buffer_line_start, buffer_line_start + terminal.rows - 1)
-                terminal.cursor = cursor_save
+                buffer_line -= (terminal.rows - 2)
+                if (buffer_line < 0):
+                    buffer_line = 0
+                self._refresh_screen(terminal, buffer_line)
             elif (ch == '^R'):
-                self.read_file_dialog(terminal)
+                self._read_file_dialog(terminal)
             elif (ch == '^W'):
-                self.write_file_dialog(terminal)
+                self._write_file_dialog(terminal)
             elif (ch == '^X'):
                 break
             else:
