@@ -126,15 +126,22 @@ class Femto:
         if (self._filename):
             self._set_title(terminal, self._filename)
         else:
-            self._set_title(terminal, 'empty buffer')
+            self._set_title(terminal, 'femto')
         terminal.cursor = (2,1)
         self.print(buffer_line, buffer_line + (terminal.rows - 2), terminal.cols)
-        self._set_status(terminal, '[^R]ead  [^W]rite  e[^X]it')
+        self._set_status(terminal, '[^N]ew  [^R]ead  [^W]rite  e[^X]it')
+
+    def _new_buffer_dialog(self, terminal):
+        if (self._buffer != ''):
+            prompt = 'Clear buffer [y/N]? '
+            confirm = self._get_input(terminal, prompt)
+            if (confirm == 'y' or confirm == 'Y'):
+                self.purge()
+            self._filename = ''
 
     def _read_file_dialog(self, terminal):
         self._filename = self._get_input(terminal, 'Read filename: ')
         self.read(self._filename)
-        self._refresh_screen(terminal)
 
     def _write_file_dialog(self, terminal):
         if (self._filename):
@@ -143,10 +150,20 @@ class Femto:
             if (filename != ''):
                 self._filename = filename
         else:
-            prompt = 'Write as filename: '
-            self._filename = self._get_input(terminal, prompt)
+            while (self._filename == ''):
+                prompt = 'Write as filename: '
+                self._filename = self._get_input(terminal, prompt)
         self.write(self._filename)
-        
+
+    def _exit_dialog(self, terminal):
+        if (self._buffer != ''):
+            prompt = 'Exit [y/N]? '
+            confirm = self._get_input(terminal, prompt)
+            if (confirm == 'y' or confirm == 'Y'):
+                return True
+            else:
+                return False
+
     def visual(self):
         """
         Navigate and edit buffer based on user input.
@@ -192,11 +209,21 @@ class Femto:
                 if (buffer_line < 0):
                     buffer_line = 0
                 self._refresh_screen(terminal, buffer_line)
-            elif (ch == '^R'):
+            elif (ch == '^N'):
+                self._new_buffer_dialog(terminal)
+                self._refresh_screen(terminal)
+            elif (ch == '^R' or ch == 'F3'):
                 self._read_file_dialog(terminal)
-            elif (ch == '^W'):
+                self._refresh_screen(terminal)
+            elif (ch == '^W' or ch == 'F2'):
                 self._write_file_dialog(terminal)
+                self._refresh_screen(terminal)
             elif (ch == '^X'):
-                break
+                okay_to_exit = self._exit_dialog(terminal)
+                if (okay_to_exit == False):
+                    self._refresh_screen(terminal)
+                else:
+                    terminal.clear(clear_scrollback=True)
+                    break
             else:
                 stdout.write(ch)
