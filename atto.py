@@ -160,7 +160,7 @@ class Atto(TextBuffer):
         Add new lines after the indicated line number.
         """
         line_num = kwargs.get('start') or len(self._buffer)
-        if line_num == None:
+        if line_num == None or line_num < 0:
             return False
         for line in self._input_multiline(self.text_prompt):
             line_num += 1
@@ -190,12 +190,25 @@ class Atto(TextBuffer):
             line_num += 1
         self._current_line = start
 
+    def edit(self, **kwargs):
+        if self._is_dirty == True:
+            print('Unsaved changes exist. Use uppercase E to override')
+        else:
+            self.prompt_filename()
+            self.purge()
+            self.load(self._filename)
+            self._current_line = len(self._buffer) or 1
+
+    def edit_unconditional(self, **kwargs):
+        self._is_dirty = False
+        self.edit((kwargs))
+
     def insert(self, **kwargs):
         """
         Add new lines after the indicated line number.
         """
-        line_num = kwargs.get('start') or len(self._buffer)
-        if line_num == None:
+        line_num = kwargs.get('start')
+        if line_num == None or line_num < 1:
             return False
         for line in self._input_multiline(self.text_prompt):
             self.insert_line(line_num, line)
@@ -255,7 +268,7 @@ class Atto(TextBuffer):
         self.prompt_filename()
         self.save(self._filename)
 
-    def edit(self):
+    def begin(self):
         """
         Use interactive commands to modify the text buffer.
         """
@@ -264,13 +277,13 @@ class Atto(TextBuffer):
         cmd_functions['a'] = self.append
         cmd_functions['c'] = self.change
         cmd_functions['d'] = self.delete
-        #cmd_functions['e'] = self.edit file
+        cmd_functions['e'] = self.edit
+        cmd_functions['E'] = self.edit_unconditional
         cmd_functions['f'] = self.prompt_filename
         cmd_functions['i'] = self.insert
         cmd_functions['j'] = self.join
         cmd_functions['n'] = self.number
         cmd_functions['p'] = self.print
-        #read file
         cmd_functions['w'] = self.write
 
         self._current_line = len(self._buffer) or 1
@@ -281,7 +294,7 @@ class Atto(TextBuffer):
                 break
             elif cmd_string == 'q':
                 if self._is_dirty == True:
-                    print('Unsaved changes exist. Enter q! to override')
+                    print('Unsaved changes exist. Use uppercase Q to override')
                 else:
                     break
             else:
@@ -290,6 +303,8 @@ class Atto(TextBuffer):
                     print('Unrecognized cmd. Try ? for help.')
                 elif len(cmd_string) == 1:
                     result = cmd_functions[cmd]()
+                    if result == False:
+                        print('Bad address.')
                 else:
                     address = cmd_string[:-1]
                     address = address.replace('%', '1,$')
@@ -304,7 +319,7 @@ class Atto(TextBuffer):
                     if result == False:
                         print('Bad address range.')
 
-def atto(filename):
+def atto(filename=None):
     editor = Atto(filename)
     print('Enter ? to view help.')
-    editor.edit()
+    editor.begin()
