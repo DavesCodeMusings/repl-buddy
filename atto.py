@@ -202,6 +202,16 @@ class Atto(TextBuffer):
             line_num += 1
         self._current_line = line_num - 1
 
+    def join(self, **kwargs):
+        """
+        Combine lines.
+        """
+        start = kwargs.get('start') or self._current_line
+        stop = kwargs.get('stop') or self._current_line
+        if start > len(self._buffer) or stop > len(self._buffer):
+            return False
+        self._buffer[start-1:stop] = [''.join(self._buffer[start-1:stop])]
+
     def number(self, **kwargs):
         """
         Print lines prefixed with line numbers.
@@ -257,7 +267,7 @@ class Atto(TextBuffer):
         #cmd_functions['e'] = self.edit file
         cmd_functions['f'] = self.prompt_filename
         cmd_functions['i'] = self.insert
-        #join lines
+        cmd_functions['j'] = self.join
         cmd_functions['n'] = self.number
         cmd_functions['p'] = self.print
         #read file
