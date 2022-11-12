@@ -69,6 +69,15 @@ terminal.style = ANSI.NORMAL
 
 _So retro!_
 
+### Want to edit files like it's 1986?
+```
+from atto import *
+atto('filename.txt')
+```
+
+Now you can stare at a prompt and scratch your head just like when you
+try to use the `ed` line editor. (But you can type ? to get help.)
+
 ## How do I use REPL Buddy on my microcontroller?
 It's easy. First, you import the command functions like this:
 ```
