@@ -1,6 +1,8 @@
 # atto
-#    (combining form) a metric system unit prefix denoting 10 to the -18 power
-#    (noun) a tiny line-based text editor modeled as a subset of the ed editor
+#     (combining form) a metric system unit prefix denoting 10 to the -18 power
+#     (noun) a tiny line-based text editor modeled as a subset of the ed editor
+
+from sys import stdout
 
 class TextBuffer:
     """
@@ -129,10 +131,10 @@ class Atto(TextBuffer):
             '{n1},{n2}n  Print with numbered lines',
             '{n1},{n2}p  Print',
             'q           Quit',
-            'q! or Q     Quit without saving'
+            'q! or Q     Quit without saving',
             'w           Write (save) to file'
         ])
-        print(help_text)
+        stdout.write(help_text + '\n')
 
     def prompt_filename(self):
         """
@@ -196,7 +198,7 @@ class Atto(TextBuffer):
         Load a new file into the buffer.
         """
         if self._is_dirty == True:
-            print('Unsaved changes exist. Use uppercase E to override')
+            stdout.write('Unsaved changes exist. Use uppercase E to override\n')
         else:
             self.prompt_filename()
             self.purge()
@@ -251,7 +253,8 @@ class Atto(TextBuffer):
             line_num_field = '{:>4d}'
         line_num = start
         while line_num <= stop:
-            print(line_num_field.format(line_num), self.get_line(line_num))
+            stdout.write(line_num_field.format(line_num) + ' ')
+            stdout.write(self.get_line(line_num) + '\n')
             line_num += 1
 
     def print(self, **kwargs):
@@ -266,9 +269,9 @@ class Atto(TextBuffer):
         line_num = start
         while line_num <= stop:
             if line_length == None:
-                print(self.get_line(line_num))
+                stdout.write(self.get_line(line_num) + '\n')
             else:
-                print(self.get_line(line_num)[:line_length])
+                stdout.write(self.get_line(line_num)[:line_length] + '\n')
             line_num += 1
 
     def write(self):
@@ -304,17 +307,17 @@ class Atto(TextBuffer):
                 break
             elif cmd_string == 'q':
                 if self._is_dirty == True:
-                    print('Unsaved changes exist. Use uppercase Q to override')
+                    stdout.write('Unsaved changes exist. Use uppercase Q to override\n')
                 else:
                     break
             else:
                 cmd = cmd_string[-1]
                 if cmd not in cmd_functions:
-                    print('Unrecognized cmd. Try ? for help.')
+                    stdout.write('Unrecognized cmd. Try ? for help.\n')
                 elif len(cmd_string) == 1:
                     result = cmd_functions[cmd]()
                     if result == False:
-                        print('Bad address.')
+                        stdout.write('Bad address.\n')
                 else:
                     address = cmd_string[:-1]
                     address = address.replace('%', '1,$')
@@ -327,9 +330,9 @@ class Atto(TextBuffer):
                         stop = start
                     result = cmd_functions[cmd](start=int(start), stop=int(stop))
                     if result == False:
-                        print('Bad address range.')
+                        stdout.write('Bad address range.\n')
 
 def atto(filename=None):
     editor = Atto(filename)
-    print('Enter ? to view help.')
+    stdout.write('Enter ? to view help.\n')
     editor.begin()
