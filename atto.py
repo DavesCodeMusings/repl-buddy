@@ -168,6 +168,9 @@ class Atto(TextBuffer):
         self._current_line = line_num
 
     def change(self, **kwargs):
+        """
+        Replace line with new line.
+        """
         line_num = kwargs.get('start')
         if line_num == None:
             return False
@@ -191,17 +194,24 @@ class Atto(TextBuffer):
         self._current_line = start
 
     def edit(self, **kwargs):
+        """
+        Load a new file into the buffer.
+        """
         if self._is_dirty == True:
             print('Unsaved changes exist. Use uppercase E to override')
         else:
             self.prompt_filename()
             self.purge()
             self.load(self._filename)
+            self._is_dirty = False
             self._current_line = len(self._buffer) or 1
 
     def edit_unconditional(self, **kwargs):
+        """
+        Load a new file into the buffer, disregarding unsaved changes.
+        """
         self._is_dirty = False
-        self.edit((kwargs))
+        self.edit()
 
     def insert(self, **kwargs):
         """
@@ -265,6 +275,9 @@ class Atto(TextBuffer):
             line_num += 1
 
     def write(self):
+        """
+        Save the buffer to a file.
+        """
         self.prompt_filename()
         self.save(self._filename)
 
