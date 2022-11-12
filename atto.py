@@ -2,8 +2,6 @@
 #    (combining form) a metric system unit prefix denoting 10 to the -18 power
 #    (noun) a tiny line-based text editor modeled as a subset of the ed editor
 
-from sys import stdout
-
 class TextBuffer:
     """
     Functions for loading, saving and manipulating text editor buffers.
@@ -244,17 +242,16 @@ class Atto(TextBuffer):
         if start > len(self._buffer) or stop > len(self._buffer):
             return False
         if stop < 10:
-            line_num_field = '{:>1d} '
+            line_num_field = '{:>1d}'
         elif stop < 100:
-            line_num_field = '{:>2d} '
+            line_num_field = '{:>2d}'
         elif stop < 1000:
-            line_num_field = '{:>3d} '
+            line_num_field = '{:>3d}'
         else:
-            line_num_field = '{:>4d} '
+            line_num_field = '{:>4d}'
         line_num = start
         while line_num <= stop:
-            stdout.write(line_num_field.format(line_num))
-            stdout.write(self.get_line(line_num) + '\n')
+            print(line_num_field.format(line_num), self.get_line(line_num))
             line_num += 1
 
     def print(self, **kwargs):
@@ -269,9 +266,9 @@ class Atto(TextBuffer):
         line_num = start
         while line_num <= stop:
             if line_length == None:
-                stdout.write(self.get_line(line_num) + '\n')
+                print(self.get_line(line_num))
             else:
-                stdout.write(self.get_line(line_num)[:line_length] + '\n')
+                print(self.get_line(line_num)[:line_length])
             line_num += 1
 
     def write(self):
