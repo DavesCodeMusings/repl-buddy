@@ -10,9 +10,9 @@ class TextBuffer:
     """
     def __init__(self, filename=None):
         self._buffer = []
-        self._filename = ''
+        self.filename = ''
         if filename != None:
-            self._filename = filename
+            self.filename = filename
             self.load(filename)
         self._is_dirty = False
 
@@ -76,14 +76,14 @@ class TextBuffer:
             self._is_dirty = True
         except:
             pass
-            self._filename = filename
+            self.filename = filename
 
     def save(self, filename=None, eol_marker='\n'):
         """
         Write contents of buffer to filename by adding end of line character(s).
         """
         if filename == None:
-            filename = self._filename
+            filename = self.filename
         with open(filename, 'w') as f:
             for line in self._buffer:
                 f.write(line + eol_marker)
@@ -126,6 +126,7 @@ class Atto(TextBuffer):
             '{n}a        Append new line(s) after',
             '{n}c        Change (replace) line',
             '{n1},{n2}d  Delete line(s)',
+            'e           Edit new file',
             'f           View/change filename',
             '{n}i        Insert new line before',
             '{n1},{n2}n  Print with numbered lines',
@@ -140,9 +141,9 @@ class Atto(TextBuffer):
         """
         Prompt for filename, accepting current name as the default value.
         """
-        filename = input('[{}]:'.format(self._filename))
+        filename = input('[{}]:'.format(self.filename))
         if filename != '':
-            self._filename = filename
+            self.filename = filename
 
     def _input_multiline(self, prompt):
         """
@@ -202,7 +203,7 @@ class Atto(TextBuffer):
         else:
             self.prompt_filename()
             self.purge()
-            self.load(self._filename)
+            self.load(self.filename)
             self._is_dirty = False
             self._current_line = len(self._buffer) or 1
 
@@ -279,25 +280,26 @@ class Atto(TextBuffer):
         Save the buffer to a file.
         """
         self.prompt_filename()
-        self.save(self._filename)
+        self.save(self.filename)
 
     def begin(self):
         """
         Use interactive commands to modify the text buffer.
         """
-        cmd_functions = {}
-        cmd_functions['?'] = self.help
-        cmd_functions['a'] = self.append
-        cmd_functions['c'] = self.change
-        cmd_functions['d'] = self.delete
-        cmd_functions['e'] = self.edit
-        cmd_functions['E'] = self.edit_unconditional
-        cmd_functions['f'] = self.prompt_filename
-        cmd_functions['i'] = self.insert
-        cmd_functions['j'] = self.join
-        cmd_functions['n'] = self.number
-        cmd_functions['p'] = self.print
-        cmd_functions['w'] = self.write
+        cmd_functions = {
+            '?': self.help,
+            'a': self.append,
+            'c': self.change,
+            'd': self.delete,
+            'e': self.edit,
+            'E': self.edit_unconditional,
+            'f': self.prompt_filename,
+            'i': self.insert,
+            'j': self.join,
+            'n': self.number,
+            'p': self.print,
+            'w': self.write
+        }
 
         self._current_line = len(self._buffer) or 1
 

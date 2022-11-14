@@ -1,4 +1,4 @@
-from sys import stdin, stdout
+from sys import stdin, stdout, exit
 from ansi import ANSI
 from atto import Atto
 
@@ -40,7 +40,10 @@ class Femto(Atto):
         cursor_save = self.terminal.cursor
         self.terminal.cursor = (self.terminal.lines, 1)
         self.terminal.clear_line()
-        reply = input(prompt)
+        self.terminal.style = ANSI.A_BOLD
+        stdout.write(prompt)
+        self.terminal.style = ANSI.A_NORMAL
+        reply = input()
         self.terminal.cursor = cursor_save
         return reply
 
@@ -55,7 +58,7 @@ class Femto(Atto):
 
     def _refresh_screen(self):
         self.terminal.clear(clear_scrollback=True)
-        self._set_title(self._filename)
+        self._set_title(self.filename)
         self.terminal.cursor = (2,1)
         stop_line = min(self._current_line+self.terminal.lines-3, len(self._buffer))
         self.print(start=self._current_line, stop=stop_line, line_length=self.terminal.cols)
@@ -68,33 +71,36 @@ class Femto(Atto):
             confirm = self._get_input(prompt)
             if (confirm == 'y' or confirm == 'Y'):
                 self.purge()
-            self._filename = ''
+            self.filename = ''
             self._refresh_screen()
 
     def _read_file_dialog(self):
-        self._filename = self._get_input('Read filename: ')
-        self.load(self._filename)
+        self.filename = self._get_input('Read filename: ')
+        self.load(self.filename)
         self._refresh_screen()
 
     def _write_file_dialog(self):
-        if (self._filename):
-            prompt = 'Write filename [{}]: '.format(self._filename)
+        if (self.filename):
+            prompt = 'Write filename [{}]: '.format(self.filename)
             filename = self._get_input(prompt)
             if (filename != ''):
-                self._filename = filename
+                self.filename = filename
         else:
-            while (self._filename == ''):
+            while (self.filename == ''):
                 prompt = 'Write as filename: '
-                self._filename = self._get_input(prompt)
-        self.save(self._filename)
+                self.filename = self._get_input(prompt)
+        self.save(self.filename)
+        self._refresh_screen()
 
     def _exit_dialog(self):
         if (self._buffer != ''):
             prompt = 'Exit [y/N]? '
             confirm = self._get_input(prompt)
             if (confirm == 'y' or confirm == 'Y'):
-                return True
+                self.terminal.clear(clear_scrollback=True)
+                exit(0)
             else:
+                self._refresh_screen()
                 return False
 
     def cursor_move(self, key_code):
@@ -133,12 +139,14 @@ class Femto(Atto):
         self._current_line = len(self._buffer) or 1
         self._refresh_screen()
 
-        ctrl_key_functions = {}
-        ctrl_key_functions[Femto.KEY_CTRL_N] = self._new_buffer_dialog
-        ctrl_key_functions[Femto.KEY_CTRL_R] = self._read_file_dialog
-        ctrl_key_functions[Femto.KEY_CTRL_W] = self._write_file_dialog
+        ctrl_key_functions = {
+            Femto.KEY_CTRL_N: self._new_buffer_dialog,
+            Femto.KEY_CTRL_R: self._read_file_dialog,
+            Femto.KEY_CTRL_W: self._write_file_dialog,
+            Femto.KEY_CTRL_X: self._exit_dialog
+        }
 
-        while (True):
+        while True:
             key_code = self.terminal.getch()
             if key_code > 0x1F and key_code < 0x7F:
                 stdout.write(chr(key_code))
@@ -148,10 +156,3 @@ class Femto(Atto):
                 self.screen_scroll(key_code)
             elif key_code in ctrl_key_functions:
                 ctrl_key_functions[key_code]()
-            elif (key_code == Femto.KEY_CTRL_X):
-                okay_to_exit = self._exit_dialog()
-                if (okay_to_exit == False):
-                    self._refresh_screen()
-                else:
-                    self.terminal.clear(clear_scrollback=True)
-                    break
