@@ -1,229 +1,157 @@
 from sys import stdin, stdout
-from select import poll, POLLIN
 from ansi import ANSI
+from atto import Atto
 
-class Femto:
-    def __init__(self, filename=None):
-        self._buffer = ''
-        self._filename = ''
-        if (filename != None):
-            self.read(filename)
+class Femto(Atto):
+    KEY_CTRL_N = 0x0E
+    KEY_CTRL_R = 0x12
+    KEY_CTRL_W = 0x17
+    KEY_CTRL_X = 0x18
 
-    def read(self, filename):
+    def _set_title(self, message):
         """
-        Load file contents into buffer.
+        Show message on the top line in dimmed color.
         """
-        try:
-            with open(filename) as f:
-                self._buffer = f.readlines()
-            self._filename = filename
-        except Exception as ex:
-            self._filename = ''
-            print(ex)
-
-    def write(self, filename=None):
-        """
-        Save contents of buffer to filename.
-        """
-        if (filename == None):
-            filename = self._filename
-        with open(filename, 'w') as f:
-            for line in self._buffer:
-                f.write(line)
-
-    def purge(self):
-        """
-        Release the buffer memory and start with a fresh one.
-        """
-        del self._buffer
-        self._buffer = ''
-
-    def print(self, start=0, stop=None, line_length=None):
-        """
-        Display a range of buffer lines, possibly truncated to fit.
-        """
-        if (start > len(self._buffer)):
-            start = len(self._buffer) - 1
-
-        if (stop == None or stop > len(self._buffer)):
-            stop = len(self._buffer)
-
-        for line_num in range(start, stop):
-            if (line_length == None):
-                stdout.write(self._buffer[line_num])
-            else:
-                stdout.write(self._buffer[line_num][:line_length])
-
-    def list(self):
-        """
-        Print entire buffer with line numbers.
-        """
-        if (len(self._buffer) < 10):
-            line_num_field = '{:>1d} '
-        elif (len(self._buffer) < 100):
-            line_num_field = '{:>2d} '
-        elif (len(self._buffer) < 1000):
-            line_num_field = '{:>3d} '
-        else:
-            line_num_field = '{:>4d} '
-        current_line_num = 1
-        for line in self._buffer:
-            stdout.write(line_num_field.format(current_line_num))
-            stdout.write(line)
-            current_line_num += 1
-
-    def page(self, page_length=20):
-        """
-        Print buffer, pausing every so many lines.
-        """
-        current_line_num = 1
-        for line in self._buffer:
-            if (current_line_num % page_length == 0):
-                ch = stdin.read(1)
-                if (ch == 'q' or ch == 'Q'):
-                    break
-            stdout.write(line)
-            current_line_num += 1
-
-    def _set_title(self, terminal, message):
-        """
-        Show message on the top line in inverse color scheme.
-        """
-        cursor_save = terminal.cursor
-        terminal.cursor = (1, 1)
-        terminal.clear_line()
-        starting_column = int((terminal.cols - len(message)) / 2)
-        terminal.cursor = (1, starting_column)
-        terminal.style = ANSI.DIM
+        cursor_save = self.terminal.cursor
+        self.terminal.cursor = (1, 1)
+        self.terminal.clear_line()
+        starting_column = int((self.terminal.cols - len(message)) / 2)
+        self.terminal.cursor = (1, starting_column)
+        self.terminal.style = ANSI.A_DIM
         stdout.write(message)
-        terminal.style = ANSI.NORMAL
-        terminal.cursor = cursor_save
+        self.terminal.style = ANSI.A_NORMAL
+        self.terminal.cursor = cursor_save
 
-    def _set_status(self, terminal, message):
+    def _set_status(self, message):
         """
-        Show message on the bottom line in inverse color scheme.
+        Show message on the bottom line in dimmed color.
         """
-        cursor_save = terminal.cursor
-        terminal.cursor = (terminal.rows, 1)
-        terminal.style = ANSI.DIM
+        cursor_save = self.terminal.cursor
+        self.terminal.cursor = (self.terminal.lines, 1)
+        self.terminal.style = ANSI.A_DIM
         stdout.write(message)
-        terminal.style = ANSI.NORMAL
-        terminal.cursor = cursor_save
+        self.terminal.style = ANSI.A_NORMAL
+        self.terminal.cursor = cursor_save
 
-    def _get_input(self, terminal, prompt):
+    def _get_input(self, prompt):
         """
         Show prompt and capture user reply.
         """
-        cursor_save = terminal.cursor
-        terminal.cursor = (terminal.rows, 1)
-        terminal.clear_line()
+        cursor_save = self.terminal.cursor
+        self.terminal.cursor = (self.terminal.lines, 1)
+        self.terminal.clear_line()
         reply = input(prompt)
-        terminal.cursor = cursor_save
+        self.terminal.cursor = cursor_save
         return reply
 
-    def _refresh_screen(self, terminal, buffer_line=0):
-        terminal.clear(clear_scrollback=True)
-        if (self._filename):
-            self._set_title(terminal, self._filename)
-        else:
-            self._set_title(terminal, 'femto')
-        terminal.cursor = (2,1)
-        self.print(buffer_line, buffer_line + (terminal.rows - 2), terminal.cols)
-        self._set_status(terminal, '[^N]ew  [^R]ead  [^W]rite  e[^X]it')
+    def _show_coords(self):
+        cursor_save = self.terminal.cursor
+        self.terminal.cursor = (self.terminal.lines, self.terminal.cols-16)
+        stdout.write(ANSI.CSI+ANSI.EL0)  # clear to end of line
+        self.terminal.style = ANSI.A_DIM
+        stdout.write('Ln {:d}, Col {:d}'.format(self._current_line, cursor_save[1]))
+        self.terminal.style = ANSI.A_NORMAL
+        self.terminal.cursor = cursor_save
 
-    def _new_buffer_dialog(self, terminal):
+    def _refresh_screen(self):
+        self.terminal.clear(clear_scrollback=True)
+        self._set_title(self._filename)
+        self.terminal.cursor = (2,1)
+        stop_line = min(self._current_line+self.terminal.lines-3, len(self._buffer))
+        self.print(start=self._current_line, stop=stop_line, line_length=self.terminal.cols)
+        self._set_status('[^N]ew [^R]ead [^W]rite e[^X]it')
+        self._show_coords()
+
+    def _new_buffer_dialog(self):
         if (self._buffer != ''):
             prompt = 'Clear buffer [y/N]? '
-            confirm = self._get_input(terminal, prompt)
+            confirm = self._get_input(prompt)
             if (confirm == 'y' or confirm == 'Y'):
                 self.purge()
             self._filename = ''
+            self._refresh_screen()
 
-    def _read_file_dialog(self, terminal):
-        self._filename = self._get_input(terminal, 'Read filename: ')
-        self.read(self._filename)
+    def _read_file_dialog(self):
+        self._filename = self._get_input('Read filename: ')
+        self.load(self._filename)
+        self._refresh_screen()
 
-    def _write_file_dialog(self, terminal):
+    def _write_file_dialog(self):
         if (self._filename):
             prompt = 'Write filename [{}]: '.format(self._filename)
-            filename = self._get_input(terminal, prompt)
+            filename = self._get_input(prompt)
             if (filename != ''):
                 self._filename = filename
         else:
             while (self._filename == ''):
                 prompt = 'Write as filename: '
-                self._filename = self._get_input(terminal, prompt)
-        self.write(self._filename)
+                self._filename = self._get_input(prompt)
+        self.save(self._filename)
 
-    def _exit_dialog(self, terminal):
+    def _exit_dialog(self):
         if (self._buffer != ''):
             prompt = 'Exit [y/N]? '
-            confirm = self._get_input(terminal, prompt)
+            confirm = self._get_input(prompt)
             if (confirm == 'y' or confirm == 'Y'):
                 return True
             else:
                 return False
 
-    def visual(self):
+    def cursor_move(self, key_code):
+        cursor_row, cursor_col = self.terminal.cursor
+        if key_code == ANSI.KEY_RIGHT:
+            cursor_col +=1
+        elif key_code == ANSI.KEY_LEFT:
+            cursor_col -=1
+        elif key_code == ANSI.KEY_DOWN:
+            cursor_row +=1
+        elif key_code == ANSI.KEY_UP:
+            cursor_row -=1
+        cursor_row = max(cursor_row, 2)  # Row 1 is title bar
+        cursor_row = min(cursor_row, self.terminal.lines - 1)  # Last row is status bar
+        cursor_col = max(cursor_col, 1)
+        cursor_col = min(cursor_col, self.terminal.cols)
+        self.terminal.cursor = cursor_row, cursor_col
+        self._show_coords()
+
+    def screen_scroll(self, key_code):
+        if key_code == ANSI.KEY_NPAGE:
+            self._current_line += (self.terminal.lines - 2)
+        elif key_code == ANSI.KEY_PPAGE:
+            self._current_line -= (self.terminal.lines - 2)
+        self._current_line = max(self._current_line, 1)
+        self._current_line = min(self._current_line, len(self._buffer))
+        self._refresh_screen()
+        self._show_coords()
+
+    def begin(self):
         """
         Navigate and edit buffer based on user input.
         """
-        terminal = ANSI()
+        self.terminal = ANSI()
+        self.terminal.echo = False
+        self._current_line = len(self._buffer) or 1
+        self._refresh_screen()
 
-        buffer_line = 0
-        self._refresh_screen(terminal, buffer_line)
+        ctrl_key_functions = {}
+        ctrl_key_functions[Femto.KEY_CTRL_N] = self._new_buffer_dialog
+        ctrl_key_functions[Femto.KEY_CTRL_R] = self._read_file_dialog
+        ctrl_key_functions[Femto.KEY_CTRL_W] = self._write_file_dialog
 
         while (True):
-            ch = terminal.get_key()
-            if (ch == 'CUF'):
-                cursor_row, cursor_col = terminal.cursor
-                cursor_col += 1
-                if (cursor_col > terminal.cols):
-                    cursor_col = terminal.cols
-                terminal.cursor = cursor_row, cursor_col
-            elif (ch == 'CUB'):
-                cursor_row, cursor_col = terminal.cursor
-                cursor_col -= 1
-                if (cursor_col < 1):
-                    cursor_col = 1
-                terminal.cursor = cursor_row, cursor_col
-            elif (ch == 'CUU'):
-                cursor_row, cursor_col = terminal.cursor
-                cursor_row -= 1
-                if (cursor_row < 1):
-                    cursor_row = 1
-                terminal.cursor = cursor_row, cursor_col
-            elif (ch == 'CUD'):
-                cursor_row, cursor_col = terminal.cursor
-                cursor_row += 1
-                if (cursor_row > terminal.rows):
-                    cursor_row = terminal.rows
-                terminal.cursor = cursor_row, cursor_col
-            elif (ch == 'PgDn' or ch == '^D'):
-                buffer_line += (terminal.rows -2)
-                if (buffer_line > len(self._buffer)):
-                    buffer_line = len(self._buffer)
-                self._refresh_screen(terminal, buffer_line)
-            elif (ch == 'PgUp' or ch == '^U'):
-                buffer_line -= (terminal.rows - 2)
-                if (buffer_line < 0):
-                    buffer_line = 0
-                self._refresh_screen(terminal, buffer_line)
-            elif (ch == '^N'):
-                self._new_buffer_dialog(terminal)
-                self._refresh_screen(terminal)
-            elif (ch == '^R' or ch == 'F3'):
-                self._read_file_dialog(terminal)
-                self._refresh_screen(terminal)
-            elif (ch == '^W' or ch == 'F2'):
-                self._write_file_dialog(terminal)
-                self._refresh_screen(terminal)
-            elif (ch == '^X'):
-                okay_to_exit = self._exit_dialog(terminal)
+            key_code = self.terminal.getch()
+            if key_code > 0x1F and key_code < 0x7F:
+                stdout.write(chr(key_code))
+            elif key_code >= ANSI.KEY_DOWN and key_code <= ANSI.KEY_BACKSPACE:
+                self.cursor_move(key_code)
+            elif key_code == ANSI.KEY_PPAGE or key_code == ANSI.KEY_NPAGE:
+                self.screen_scroll(key_code)
+            elif key_code in ctrl_key_functions:
+                ctrl_key_functions[key_code]()
+            elif (key_code == Femto.KEY_CTRL_X):
+                okay_to_exit = self._exit_dialog()
                 if (okay_to_exit == False):
-                    self._refresh_screen(terminal)
+                    self._refresh_screen()
                 else:
-                    terminal.clear(clear_scrollback=True)
+                    self.terminal.clear(clear_scrollback=True)
                     break
-            else:
-                stdout.write(ch)

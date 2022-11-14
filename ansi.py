@@ -12,60 +12,100 @@ class ANSI:
     """
 
     # Basic 3-bit colors
-    BLACK = 0
-    RED = 1
-    GREEN = 2
-    YELLOW = 3
-    BLUE = 4
-    MAGENTA = 5
-    CYAN = 6
-    WHITE = 7
+    COLOR_BLACK = 0
+    COLOR_RED = 1
+    COLOR_GREEN = 2
+    COLOR_YELLOW = 3
+    COLOR_BLUE = 4
+    COLOR_MAGENTA = 5
+    COLOR_CYAN = 6
+    COLOR_WHITE = 7
 
     # Text styles
-    NORMAL = 0
-    BOLD = 1
-    DIM = 2
-    UNDERLINE = 4
-    INVERSE = 7
+    A_NORMAL = 0
+    A_BOLD = 1
+    A_DIM = 2
+    A_UNDERLINE = 4
+    A_INVERSE = 7
+
+    # Special keypad keys
+    KEY_DOWN = 0x102
+    KEY_UP = 0x103
+    KEY_LEFT = 0x104
+    KEY_RIGHT = 0x105
+    KEY_HOME = 0x106
+    KEY_BACKSPACE = 0x107
+    KEY_F0 = 0x108
+    KEY_F1 = 0x109
+    KEY_F2 = 0x10A
+    KEY_F3 = 0x10B
+    KEY_F4 = 0x10C
+    KEY_DC = 0x14A  # Delete
+    KEY_IC = 0x14B  # Insert
+    KEY_NPAGE = 0x152  # Next page (PgDn)
+    KEY_PPAGE = 0x153  # Prev page (PgUp)
+    KEY_END = 0x168
+
+    keypad_sequence = {}
+    keypad_sequence['A'] = KEY_UP
+    keypad_sequence['B'] = KEY_DOWN
+    keypad_sequence['C'] = KEY_RIGHT
+    keypad_sequence['D'] = KEY_LEFT
+    keypad_sequence['F'] = KEY_END
+    keypad_sequence['H'] = KEY_HOME
+    keypad_sequence['1~'] = KEY_HOME
+    keypad_sequence['2~'] = KEY_IC
+    keypad_sequence['3~'] = KEY_DC
+    keypad_sequence['4~'] = KEY_END
+    keypad_sequence['5~'] = KEY_PPAGE
+    keypad_sequence['6~'] = KEY_NPAGE
+    keypad_sequence['11~'] = KEY_F1
+    keypad_sequence['12~'] = KEY_F2
+    keypad_sequence['13~'] = KEY_F3
+    keypad_sequence['14~'] = KEY_F4
 
     # Escape sequences
-    ESC = b'\x1B'
+    ESC = '\x1B'
     RESET = 'c'
 
     # Control sequences
-    CSI = '\x1B['
-    CUP = 'H'
-    DSR = '6n'
-    ED2 = '2J'
-    ED3 = '3J'
-    EL2 = '2K'
+    CSI = ESC + '['
+    CUP = 'H'   # move cursor to Line;Col
+    DSR = '6n'  # query cursor position
+    ED2 = '2J'  # erase screen
+    ED3 = '3J'  # erase screen and scrollback
+    EL0 = '0K'  # erase line to end
+    EL1 = '1K'  # erase line to beginning
+    EL2 = '2K'  # erase entire line
 
     def __init__(self):
-        """
-        Reset terminal.
-        """
         self.reset()
+        self.cursor = (1,1)
+        self.echo = True
+        self.use_keypad = True
 
     def clear(self, clear_scrollback=False):
         """
-        Remove all text from the display. Move cursor to (1,1)
+        Remove all text from the display. Does not move cursor.
         """
         if (clear_scrollback == True):
             stdout.write(ANSI.CSI + ANSI.ED3)
             stdout.write(ANSI.CSI + ANSI.ED2)
         else:
             stdout.write(ANSI.CSI + ANSI.ED2)
-        self.home()
 
     def clear_line(self):
+        """
+        Erase the entire line at the current cursor position.
+        """
         stdout.write(ANSI.CSI + ANSI.EL2)
 
-    def set_color(self, scheme=(WHITE, BLACK)):
+    def set_color(self, color_pair=(COLOR_WHITE, COLOR_BLACK)):
         """
         Set the foreground and background colors. Accepts 0..7 (3-bit) colors as a tuple.
         Refer to the predefined color constants for possible values.
         """
-        fg_color, bg_color = scheme
+        fg_color, bg_color = color_pair
         fg_code = fg_color + 30
         bg_code = bg_color + 40
         stdout.write(ANSI.CSI + str(fg_code) + ';' + str(bg_code) + 'm')
@@ -74,10 +114,10 @@ class ANSI:
 
     def get_cursor(self):
         """
-        Return cursor (row, col) coordinates as a tuple.
+        Return cursor (line, col) coordinates as a tuple.
         """
         stdout.write(ANSI.CSI + ANSI.DSR)
-        reply = ''  # Expecting reply with no newline in the form: 'ESC[{row};{col}R'
+        reply = ''  # Expecting reply with no newline in the form: 'ESC[{line};{col}R'
         while True:
             ch = stdin.read(1)
             reply += ch
@@ -87,135 +127,58 @@ class ANSI:
         reply = reply.lstrip('\x1B[')
         reply = reply.rstrip('R')
         if (match('[0-9]+;[0-9]+', reply)):
-            row, col = reply.split(';')
+            line, col = reply.split(';')
         else:
-            row, col = ('0', '0')  # Coordinates are 1-based, so (0,0) is impossible.
+            line, col = ('0', '0')  # Coordinates are 1-based, so (0,0) is impossible.
         
-        return int(row), int(col)
+        return int(line), int(col)
 
-    def set_cursor(self, coord):
+    def set_cursor(self, line_col):
         """
-        Move cursor to (row, col) given by the coord tuple.
+        Move cursor to new line, col.
         """
-        row, col = coord
-        stdout.write(ANSI.CSI + str(row) + ';' + str(col) + ANSI.CUP)
+        line, col = line_col
+        stdout.write(ANSI.CSI + str(line) + ';' + str(col) + ANSI.CUP)
 
     cursor = property(get_cursor, set_cursor)
 
-    def home(self):
-        """
-        Move the cursor to coordinates (1,1). Does not clear the screen.
-        """
-        stdout.write(ANSI.CSI + ANSI.CUP)
-
     def reset(self):
         """
-        Clear screen. Probe for terminal dimensions. Move cursor to (1,1).
+        Reset terminal and probe for terminal dimensions. Clears screen.
         """
         stdout.write(ANSI.ESC + 'c')
-        self.cursor = (999,999)                   # Move cursor far past screen limits.
-        self.rows, self.cols = self.get_cursor()  # It will stop at (last row, last col).
+        self.cursor = (999,999)              # Move cursor far past screen limits.
+        self.lines, self.cols = self.cursor  # It will stop at (last line, last col).
         self.cursor = (1,1)
 
-    def set_style(self, style=NORMAL):
+    def set_style(self, style=A_NORMAL):
         stdout.write(ANSI.CSI + str(style) + 'm')
 
     style = property(None, set_style)
 
-    def get_key(self, raw=False):
+    def getch(self):
         """
-        Wait for a keypress and return its value as a string. When not in raw mode:
-          * printable characters are returned unaffected
-          * control characters are converted to caret and letter (e.g. CTRL+A becomes ^A)
-          * backspace (to the right of +/= key on PC keyboard) is converted to '^H'
-          * arrow keys are converted to their ANSI abbreviations
-          * Home, End, Insert, Delete, PgUp, PgDn are returned as aforementioned abbreviations
-          * Function keys F1 .. F4 are returned as strings 'F1' .. 'F4'
-          * Function keys beyond F4 and other special characters are ignored
+        Wait for a keypress and return its value as an integer. Optionally
+        process keypad and function keys.
         """
-        key = None
+        ch = None
         poll_obj = poll()
         poll_obj.register(stdin, POLLIN)
         while (True):
-            ch = stdin.read(1) if poll_obj.poll(0) else None
-            if (ch != None):
-                if (raw == True):
-                    key = ch
+            keypress = stdin.read(1) if poll_obj.poll(0) else None
+            if keypress != None:
+                if self.echo == True:
+                    stdout.write(keypress)
+                ch = ord(keypress)
+                if ch != 0x1B or self.use_keypad == False:  # Not an ESC sequence
                     break
-                else:
-                    if (ord(ch) >= 32 and ord(ch) < 127):  # printable
-                        key = ch
-                        break
-                    elif (ord(ch) == 27):  # ESC
-                        if (stdin.read(1) == '['):  # ESC[ is Control Sequence Introducer
-                            sequence = stdin.read(1)
-                            if (sequence == 'A'):
-                                key = 'CUU'  # up
-                                break
-                            elif (sequence == 'B'):
-                                key = 'CUD'  # down
-                                break
-                            elif (sequence == 'C'):
-                                key = 'CUF'  # forward
-                                break
-                            elif (sequence == 'D'):
-                                key = 'CUB'  # back
-                                break
-                            elif (sequence == 'F'):
-                                key = 'End'
-                                break
-                            elif (sequence == 'H'):
-                                key = 'Home'
-                                break
-                            elif (ord(sequence) > ord('0') and ord(sequence) < ord('9')):
-                                sequence += stdin.read(1)
-                                if (sequence.endswith('~') == False):
-                                    sequence += stdin.read(1)  # some sequences are 2-digit
-                                if (sequence == '1~'):
-                                    key = 'Home'
-                                    break
-                                elif (sequence == '2~'):
-                                    key = 'Insert'
-                                    break
-                                elif (sequence == '3~'):
-                                    key = 'Delete'
-                                    break
-                                elif (sequence == '4~'):
-                                    key = 'End'
-                                    break
-                                elif (sequence == '5~'):
-                                    key = 'PgUp'
-                                    break
-                                elif (sequence == '6~'):
-                                    key = 'PgDn'
-                                    break
-                                elif (sequence == '7~'):  # Yes, this is a repeat
-                                    key = 'Home'
-                                    break
-                                elif (sequence == '8~'):  # Yes, this is a repeat
-                                    key = 'End'
-                                    break
-                                elif (sequence == '11~'):
-                                    key ='F1'
-                                    break
-                                elif (sequence == '12~'):
-                                    key ='F2'
-                                    break
-                                elif (sequence == '13~'):
-                                    key ='F3'
-                                    break
-                                elif (sequence == '14~'):
-                                    key ='F4'
-                                    break
-                                else:
-                                    break
-                    elif (ord(ch) < 32):  # CTRL keys other than ESC
-                        key = '^' + chr(64 + ord(ch))  # CTRL+A becomes ^A
-                        break
-                    elif (ord(ch) == 127):
-                        key = '^H'
-                        break
-                    else:
-                        key = None
-                        break
-        return key
+                elif stdin.read(1) == '[':  # ESC[ is Control Sequence Introducer
+                    sequence = ''
+                    while True:
+                        s = stdin.read(1)
+                        sequence += s
+                        if ord(s) > 0x3F and ord(s) < 0x7F:
+                            break
+                    ch = ANSI.keypad_sequence.get(sequence)
+                    break
+        return ch
