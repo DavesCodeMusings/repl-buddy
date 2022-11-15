@@ -4,5 +4,5 @@
     ["command.py", "github:DavesCodeMusings/repl-buddy/command.py"],
     ["atto.py", "github:DavesCodeMusings/repl-buddy/atto.py"]
   ],
-  "version": "1.6"
+  "version": "1.7"
 }
