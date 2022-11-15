@@ -5,7 +5,7 @@ class TestTextBuffer(unittest.TestCase):
     def __init__(self):
         self.b = TextBuffer()
 
-    def test_instantiatiation(self):
+    def test_instantiation(self):
         self.assertEqual(self.b._buffer, [])
         self.assertEqual(self.b._is_dirty, False)
         self.assertEqual(self.b.filename, None)
