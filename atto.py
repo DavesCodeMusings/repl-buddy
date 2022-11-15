@@ -342,17 +342,17 @@ class Atto(TextBuffer):
         if (cmd_string == None or cmd_string == ''):
             return None, None, None, None
 
-        cmd_position = 0
+        cmd_location = 0
         for ch in cmd_string:
-            if ch not in '0123456789$%,':
+            if ch not in '0123456789$%,':  # all valid address range chars
                 break
-            cmd_position += 1
+            cmd_location += 1
 
-        if cmd_position < 1:
+        if cmd_location == 0:
             addr1 = None
             addr2 = None
         else:
-            addr_range = cmd_string[0:cmd_position]
+            addr_range = cmd_string[0:cmd_location]
             addr_range = addr_range.replace('%', '1,$')
             addr_range = addr_range.replace('.', str(self._current_line))
             addr_range = addr_range.replace('$', str(len(self._buffer)))
@@ -363,16 +363,17 @@ class Atto(TextBuffer):
                 addr1 = int(addr_range)
                 addr2 = None
 
-        cmd = cmd_string[cmd_position]
-        
-        if (len(cmd_string) - 1) > cmd_position:
-            param = cmd_string[cmd_position+1:].strip()
-            if param == '.':
-                param = self._current_line
-            elif param == '$':
-                param = len(self._buffer)
-        else:
-            param = None
+        cmd = cmd_string[cmd_location:cmd_location+1]
+        if cmd == '':  # mimic ed's behavior
+            cmd = 'p'  # printing only end of addr range
+            addr1 = addr2 or addr1
+            addr2 = addr1
+
+        param = cmd_string[cmd_location+1:].strip()
+        if param == '.':
+            param = self._current_line
+        elif param == '$':
+            param = len(self._buffer)
 
         return addr1, addr2, cmd, param
 
