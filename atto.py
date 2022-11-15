@@ -1,30 +1,31 @@
 # atto
-#     (combining form) a metric system unit prefix denoting 10 to the -18 power
-#     (noun) a tiny line-based text editor modeled as a subset of the ed editor
+#   (combining form) a metric system unit prefix denoting 10 to the -18 power
+#   (noun) a tiny line-based text editor modeled as a subset of the ed editor
 
-from sys import stdout
+from sys import stdout, exit
 
 class TextBuffer:
     """
     Functions for loading, saving and manipulating text editor buffers.
+    Lines start from 1 (not 0) to be consistent with editor numbering.
     """
     def __init__(self, filename=None):
         self._buffer = []
-        self.filename = ''
-        if filename != None:
-            self.filename = filename
-            self.load(filename)
         self._is_dirty = False
+        self.verbose = True
+        self.filename = filename
+        if filename != None:
+            self.load(filename)
 
     def __str__(self):
         return '\n'.join(self._buffer)    
 
     def insert_line(self, line_num, text):
         """
-        Add a line of text to the buffer after the indicated line number.
-        (Lines start from 1)
+        Add a line of text to the buffer at the indicated line number.
+        Existing lines are pushed down to make room.
         """
-        if line_num < 1:  # text buffer lines are one-based
+        if line_num < 1:
             return False
         buffer_index = line_num - 1
         self._buffer.insert(buffer_index, text.rstrip('\r\n'))
@@ -53,13 +54,13 @@ class TextBuffer:
         del self._buffer[buffer_index]
         self._is_dirty = True
         
-    def _read_file_line(self, file):
+    def _read_file_line(self, file_handle):
         """
         Read from a file one line at a time, yeilding lines to reduce
-        memory impact.
+        memory impact. Used by load.
         """
         while True:
-            line = file.readline()
+            line = file_handle.readline()
             if line:
                 yield line
             else: # empty line means end of the file
@@ -70,13 +71,19 @@ class TextBuffer:
         Read file contents into buffer while stripping end of line characters.
         """
         try:
-            with open(filename, 'r') as file:
-                for line in self._read_file_line(file):
+            with open(filename, 'r') as f:
+                for line in self._read_file_line(f):
                     self._buffer.append(line.rstrip('\r\n'))
-            self._is_dirty = True
-        except:
-            pass
+        except Exception as ex:
+            if self.verbose == True:
+                stdout.write('File error: {}\n'.format(ex))
+            return False
+        else:
             self.filename = filename
+            self._is_dirty = False
+            if self.verbose == True:
+                stdout.write('Read {} lines.\n'.format(len(self._buffer)))
+            return True
 
     def save(self, filename=None, eol_marker='\n'):
         """
@@ -84,10 +91,18 @@ class TextBuffer:
         """
         if filename == None:
             filename = self.filename
-        with open(filename, 'w') as f:
-            for line in self._buffer:
-                f.write(line + eol_marker)
-        self._is_dirty = False
+        try:
+            with open(filename, 'w') as f:
+                for line in self._buffer:
+                    f.write(line + eol_marker)
+        except Exception as ex:
+            if self.verbose == True:
+                stdout.write('File error: {}\n'.format(ex))
+            return False
+        else:
+            self.filename = filename
+            self._is_dirty = False
+            return True
 
     def purge(self):
         """
@@ -95,17 +110,19 @@ class TextBuffer:
         """
         del self._buffer
         self._buffer = []
+        self.filename = None
         self._is_dirty = False
 
 
 class Atto(TextBuffer):
     """
-    A primitive line editor, with a subset of ed editor functionality.
+    A primitive line editor, painfully similar to the ed editor, but
+    with without the cool regex stuff.
     """
     cmd_prompt = '*'
     text_prompt = '>'
 
-    def help(self):
+    def help(self, **kwargs):
         """
         Display brief usage summary
         """
@@ -132,29 +149,32 @@ class Atto(TextBuffer):
             '{n1},{n2}n  Print with numbered lines',
             '{n1},{n2}p  Print',
             'q           Quit',
-            'q! or Q     Quit without saving',
             'w           Write (save) to file'
         ])
         stdout.write(help_text + '\n')
 
-    def prompt_filename(self):
-        """
-        Prompt for filename, accepting current name as the default value.
-        """
-        filename = input('[{}]:'.format(self.filename))
-        if filename != '':
-            self.filename = filename
-
-    def _input_multiline(self, prompt):
+    def _input_multiline(self):
         """
         Yield user input as lines until a single . is encountered.
+        Used by insert and append operations.
         """
+        stdout.write('A single . as only character ends input.\n')
         while True:
-            text = input(prompt)
+            text = input(self.text_prompt)
             if text != '.':
                 yield text
             else:
                 return
+
+    def _prompt_filename(self, prompt='Filename'):
+        """
+        Ask for a filename offering the current one as a default value.
+        """
+        if self.filename != None:
+            filename = input('{:s} [{:s}]: '.format(prompt, self.filename))
+        else:
+            filename = input('{:s}: '.format(prompt))
+        return filename
 
     def append(self, **kwargs):
         """
@@ -163,7 +183,7 @@ class Atto(TextBuffer):
         line_num = kwargs.get('start') or len(self._buffer)
         if line_num == None or line_num < 0:
             return False
-        for line in self._input_multiline(self.text_prompt):
+        for line in self._input_multiline():
             line_num += 1
             self.insert_line(line_num, line)
         self._current_line = line_num
@@ -186,11 +206,14 @@ class Atto(TextBuffer):
         stop = kwargs.get('stop')
         if start == None or start > len(self._buffer):
             return False
-        if stop == None or stop > len(self._buffer):
+        if stop == None:
+            stop = start
+        if stop > len(self._buffer):
             return False
+
         line_num = start
         while line_num <= stop:
-            self.delete_line(start)  # Not a mistake
+            self.delete_line(start)  # Not a mistake. Lines move up as removed.
             line_num += 1
         self._current_line = start
 
@@ -199,20 +222,32 @@ class Atto(TextBuffer):
         Load a new file into the buffer.
         """
         if self._is_dirty == True:
-            stdout.write('Unsaved changes exist. Use uppercase E to override\n')
+            stdout.write('Unsaved changes exist. Use uppercase E to override.\n')
         else:
-            self.prompt_filename()
-            self.purge()
-            self.load(self.filename)
-            self._is_dirty = False
-            self._current_line = len(self._buffer) or 1
+            filename = kwargs.get('param') or self.filename or self._prompt_filename()
+            if filename != None:
+                self.purge()
+                self.load(filename)
+                self._is_dirty = False
+                self._current_line = len(self._buffer) or 1
+                self.filename = filename
 
     def edit_unconditional(self, **kwargs):
         """
         Load a new file into the buffer, disregarding unsaved changes.
         """
         self._is_dirty = False
-        self.edit()
+        self.edit(**kwargs)
+
+    def file(self, **kwargs):
+        """
+        Show current filename or replace if param is present
+        """
+        new_name = kwargs.get('param')
+        if new_name != None:
+            self.filename = new_name
+        else:
+            stdout.write((self.filename or '(none)') + '\n')
 
     def insert(self, **kwargs):
         """
@@ -221,7 +256,7 @@ class Atto(TextBuffer):
         line_num = kwargs.get('start')
         if line_num == None or line_num < 1:
             return False
-        for line in self._input_multiline(self.text_prompt):
+        for line in self._input_multiline():
             self.insert_line(line_num, line)
             line_num += 1
         self._current_line = line_num - 1
@@ -275,12 +310,71 @@ class Atto(TextBuffer):
                 stdout.write(self.get_line(line_num)[:line_length] + '\n')
             line_num += 1
 
-    def write(self):
+    def quit(self, **kwargs):
+        if self._is_dirty == True:
+            stdout.write('Unsaved changes exist. Use uppercase Q to override.\n')
+        else:
+            self.quit_unconditional()
+
+    def quit_unconditional(self, **kwargs):
+        del self._buffer
+        exit(0)
+
+    def toggle_verbosity(self, **kwargs):
+        self.verbose = not self.verbose
+        state = 'on' if self.verbose else 'off'
+        stdout.write('Verbose messages: {}\n'.format(state))
+
+    def write(self, **kwargs):
         """
         Save the buffer to a file.
         """
-        self.prompt_filename()
-        self.save(self.filename)
+        filename = kwargs.get('param') or self.filename or self._prompt_filename()
+        if (filename):
+            result = self.save(filename)
+            if (result == False):
+                stdout.write('Write failed!\n')
+
+    def parse(self, cmd_string):
+        """
+        Split a command string into address range, command, and parameter.
+        """
+        if (cmd_string == None or cmd_string == ''):
+            return None, None, None, None
+
+        cmd_position = 0
+        for ch in cmd_string:
+            if ch not in '0123456789$%,':
+                break
+            cmd_position += 1
+
+        if cmd_position < 1:
+            addr1 = None
+            addr2 = None
+        else:
+            addr_range = cmd_string[0:cmd_position]
+            addr_range = addr_range.replace('%', '1,$')
+            addr_range = addr_range.replace('.', str(self._current_line))
+            addr_range = addr_range.replace('$', str(len(self._buffer)))
+            if ',' in addr_range:
+                addr1 = int(addr_range.split(',')[0])
+                addr2 = int(addr_range.split(',')[1])
+            else:
+                addr1 = int(addr_range)
+                addr2 = None
+
+        cmd = cmd_string[cmd_position]
+        
+        if (len(cmd_string) - 1) > cmd_position:
+            param = cmd_string[cmd_position+1:].strip()
+            if param == '.':
+                param = self._current_line
+            elif param == '$':
+                param = len(self._buffer)
+        else:
+            param = None
+
+        return addr1, addr2, cmd, param
 
     def begin(self):
         """
@@ -293,11 +387,14 @@ class Atto(TextBuffer):
             'd': self.delete,
             'e': self.edit,
             'E': self.edit_unconditional,
-            'f': self.prompt_filename,
+            'f': self.file,
+            'H': self.toggle_verbosity,
             'i': self.insert,
             'j': self.join,
             'n': self.number,
             'p': self.print,
+            'q': self.quit,
+            'Q': self.quit_unconditional,
             'w': self.write
         }
 
@@ -305,36 +402,14 @@ class Atto(TextBuffer):
 
         while True:
             cmd_string = input(self.cmd_prompt)
-            if cmd_string == 'q!' or cmd_string == 'Q':
-                break
-            elif cmd_string == 'q':
-                if self._is_dirty == True:
-                    stdout.write('Unsaved changes exist. Use uppercase Q to override\n')
-                else:
-                    break
+            addr1, addr2, cmd, param = self.parse(cmd_string)
+            if cmd not in cmd_functions:
+                stdout.write('Unrecognized cmd. Try ? for help.\n')
             else:
-                cmd = cmd_string[-1]
-                if cmd not in cmd_functions:
-                    stdout.write('Unrecognized cmd. Try ? for help.\n')
-                elif len(cmd_string) == 1:
-                    result = cmd_functions[cmd]()
-                    if result == False:
-                        stdout.write('Bad address.\n')
-                else:
-                    address = cmd_string[:-1]
-                    address = address.replace('%', '1,$')
-                    address = address.replace('.', str(self._current_line))
-                    address = address.replace('$', str(len(self._buffer)))
-                    if ',' in address:
-                        start, stop = address.split(',')
-                    else:
-                        start = address
-                        stop = start
-                    result = cmd_functions[cmd](start=int(start), stop=int(stop))
-                    if result == False:
-                        stdout.write('Bad address range.\n')
+                result = cmd_functions[cmd](start=addr1, stop=addr2, param=param)
+                if result == False:
+                    stdout.write('Bad address range.\n')
 
 def atto(filename=None):
     editor = Atto(filename)
-    stdout.write('Enter ? to view help.\n')
     editor.begin()
