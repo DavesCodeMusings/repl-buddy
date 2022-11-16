@@ -95,7 +95,7 @@ class TextBuffer:
                     self._buffer.append(line.rstrip('\r\n'))
         except Exception as ex:
             if self.verbose == True:
-                stdout.write('File error: {}\n'.format(ex))
+                stdout.write('{}: {}\n'.format(filename, ex))
             return False
         else:
             self.filename = filename
@@ -116,7 +116,7 @@ class TextBuffer:
                     f.write(line + eol_marker)
         except Exception as ex:
             if self.verbose == True:
-                stdout.write('File error: {}\n'.format(ex))
+                stdout.write('{}: {}\n'.format(filename, ex))
             return False
         else:
             self.filename = filename
