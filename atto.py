@@ -220,6 +220,7 @@ class Atto(TextBuffer):
             stdout.write(line_num_field.format(line_num) + ' ')
             stdout.write(self.get_line(line_num) + '\n')
             line_num += 1
+        self._current_line = stop
 
     def print(self, **kwargs):
         """
@@ -238,6 +239,7 @@ class Atto(TextBuffer):
             else:
                 stdout.write(self.get_line(line_num)[:line_length] + '\n')
             line_num += 1
+        self._current_line = stop
 
     def quit(self, **kwargs):
         if self._is_dirty == False or kwargs.get('param') == '!':
@@ -249,8 +251,9 @@ class Atto(TextBuffer):
         del self._buffer
         exit(0)
 
-    def show_current_line(self, **kwargs):
-        stdout.write(str(self._current_line) + '\n')
+    def show_line_number(self, **kwargs):
+        line_num = kwargs.get('start') or self._current_line
+        stdout.write(str(line_num) + '\n')
 
     def toggle_verbosity(self, **kwargs):
         self.verbose = not self.verbose
@@ -288,7 +291,7 @@ class Atto(TextBuffer):
 
         cmd_location = 0
         for ch in cmd_string:
-            if ch not in '0123456789$%,':  # all valid address range chars
+            if ch not in '0123456789$%,.':  # all valid address range chars
                 break
             cmd_location += 1
 
@@ -328,14 +331,14 @@ class Atto(TextBuffer):
         Use interactive commands to modify the text buffer.
         """
         cmd_functions = {
-            '?': self.help,
-            '=': self.show_current_line,
+            '=': self.show_line_number,
             'a': self.append,
             'c': self.change,
             'd': self.delete,
             'e': self.edit,
             'E': self.edit_unconditional,
             'f': self.file,
+            'h': self.help,
             'H': self.toggle_verbosity,
             'i': self.insert,
             'j': self.join,
@@ -354,7 +357,7 @@ class Atto(TextBuffer):
             cmd_string = input(self.cmd_prompt)
             addr1, addr2, cmd, param = self.parse(cmd_string)
             if cmd not in cmd_functions:
-                stdout.write('Unrecognized cmd. Try ? for help.\n')
+                stdout.write('Unrecognized cmd. Try h for help.\n')
             else:
                 result = cmd_functions[cmd](start=addr1, stop=addr2, param=param)
                 if result == False:
