@@ -291,7 +291,7 @@ class Atto(TextBuffer):
 
         cmd_location = 0
         for ch in cmd_string:
-            if ch not in '0123456789$%,.':  # all valid address range chars
+            if ch not in '0123456789$%,.>':  # all valid address range chars
                 break
             cmd_location += 1
 
@@ -300,9 +300,17 @@ class Atto(TextBuffer):
             addr2 = None
         else:
             addr_range = cmd_string[0:cmd_location]
-            addr_range = addr_range.replace('%', '1,$')
+            if addr_range[0] == '%':  # entire buffer
+                addr_range = addr_range.replace('%', '1,$')
+            if addr_range[0] == '>':  # page forward
+                stop_line = self._current_line + 22
+                if stop_line > len(self._buffer):
+                    stop_line = len(self._buffer)
+                addr_range = addr_range.replace('>', '.,{}'.format(stop_line))
+
             addr_range = addr_range.replace('.', str(self._current_line))
             addr_range = addr_range.replace('$', str(len(self._buffer)))
+
             if ',' in addr_range:
                 addr1 = int(addr_range.split(',')[0])
                 addr2 = int(addr_range.split(',')[1])
@@ -311,10 +319,8 @@ class Atto(TextBuffer):
                 addr2 = None
 
         cmd = cmd_string[cmd_location:cmd_location+1]
-        if cmd == '':  # mimic ed's behavior
-            cmd = 'p'  # printing only end of addr range
-            addr1 = addr2 or addr1
-            addr2 = addr1
+        if cmd == '':  # mimic ed's default action
+            cmd = 'p'
 
         param = cmd_string[cmd_location+1:].strip()
         if param.isdigit() == True:
