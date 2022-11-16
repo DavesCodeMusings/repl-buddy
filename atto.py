@@ -96,9 +96,7 @@ class Atto(TextBuffer):
         """
         Add new lines after the indicated line number.
         """
-        start = kwargs.get('start')
-        if start == None:
-            start = self._current_line
+        start = kwargs.get('start') or self._current_line
         if self._is_valid_addr(start, zero_start_ok=True) == False:
             return False
 
@@ -138,7 +136,7 @@ class Atto(TextBuffer):
                 self.purge()
                 self.load(filename)
                 self._is_dirty = False
-                self._current_line = len(self._buffer) or 1
+                self._current_line = len(self._buffer)
                 self.filename = filename
 
     def edit_unconditional(self, **kwargs):
@@ -350,7 +348,7 @@ class Atto(TextBuffer):
             'w': self.write
         }
 
-        self._current_line = len(self._buffer) or 1
+        self._current_line = len(self._buffer)
 
         while True:
             cmd_string = input(self.cmd_prompt)
