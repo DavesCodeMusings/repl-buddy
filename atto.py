@@ -53,6 +53,29 @@ class TextBuffer:
         buffer_index = line_num - 1
         del self._buffer[buffer_index]
         self._is_dirty = True
+
+    def copy_range(self, start, stop, dest):
+        """
+        Copy lines start..stop after line given by dest.
+        """
+        self._buffer[dest:dest] = self._buffer[start-1:stop]
+        self._is_dirty = True
+
+    def delete_range(self, start, stop):
+        """
+        Remove the lines from start..stop.
+        """
+        del self._buffer[start-1:stop]
+        self.is_dirty = True
+
+    def move_range(self, start, stop, dest):
+        """
+        Like copy, but remove the source range.
+        """
+        self.copy_range(start, stop, dest)
+        offset = stop - start + 1 if (dest < start) else 0
+        self.delete_range(start+offset, stop+offset)
+        self.is_dirty = True
         
     def _read_file_line(self, file_handle):
         """
@@ -82,7 +105,7 @@ class TextBuffer:
             self.filename = filename
             self._is_dirty = False
             if self.verbose == True:
-                stdout.write('Read {} lines.\n'.format(len(self._buffer)))
+                stdout.write('{:d} lines read from {:s}\n'.format(len(self._buffer), filename))
             return True
 
     def save(self, filename=None, eol_marker='\n'):
@@ -102,6 +125,8 @@ class TextBuffer:
         else:
             self.filename = filename
             self._is_dirty = False
+            if self.verbose == True:
+                stdout.write('{:d} lines written to {:s}\n'.format(len(self._buffer), filename))
             return True
 
     def purge(self):
@@ -130,26 +155,26 @@ class Atto(TextBuffer):
             'Usage: {addr}cmd',
             '',
             'Line Addressing',
-            '-------------------------',
-            '{n}        single line',
-            '{n1},{n2}  range of lines',
-            '1          first line',
-            '.          current line',
-            '$          last line',
-            '%          all lines 1,$',
+            '--------------------------',
+            '{n}         single line',
+            '{n1},{n2}   range of lines',
+            '1           first line',
+            '.           current line',
+            '$           last line',
+            '%           all lines 1,$',
             '',
             'Command Summary',
-            '--------------------------------------',
+            '---------------------------------------',
             '{n}a        Append new line(s) after',
-            '{n}c        Change (replace) line',
+            '{n1},{n2}c  Change (replace) line(s)',
             '{n1},{n2}d  Delete line(s)',
-            'e           Edit new file',
-            'f           View/change filename',
-            '{n}i        Insert new line before',
+            'e [path]    Edit new file',
+            'f [path]    View/change filename',
+            '{n}i        Insert new line(s) before',
             '{n1},{n2}n  Print with numbered lines',
             '{n1},{n2}p  Print',
             'q           Quit',
-            'w           Write (save) to file'
+            'w [path]    Write (save) buffer to file'
         ])
         stdout.write(help_text + '\n')
 
@@ -158,7 +183,7 @@ class Atto(TextBuffer):
         Yield user input as lines until a single . is encountered.
         Used by insert and append operations.
         """
-        stdout.write('A single . as only character ends input.\n')
+        stdout.write('Enter a single . to exit input mode.\n')
         while True:
             text = input(self.text_prompt)
             if text != '.':
@@ -176,13 +201,42 @@ class Atto(TextBuffer):
             filename = input('{:s}: '.format(prompt))
         return filename
 
+    def _is_valid_addr(self, start=None, stop=None, dest=None, zero_start_ok=False):
+        """
+        Test if address parameters in range, non-overlapping, etc.
+        """
+        valid_start = 0 if (zero_start_ok == True) else 1
+
+        if start == None:
+            return False
+        if start < valid_start or start > len(self._buffer):
+            return False
+
+        if stop != None:
+            if stop < 1 or stop > len(self._buffer):
+                return False
+            if stop < start:
+                return False
+
+        if dest != None:
+            if dest < 0 or dest > len(self._buffer):
+                return False
+            if dest >= start and dest <= stop:
+                return False
+            
+        return True
+
     def append(self, **kwargs):
         """
         Add new lines after the indicated line number.
         """
-        line_num = kwargs.get('start') or len(self._buffer)
-        if line_num == None or line_num < 0:
+        start = kwargs.get('start')
+        if start == None:
+            start = self._current_line
+        if self._is_valid_addr(start, zero_start_ok=True) == False:
             return False
+
+        line_num = start
         for line in self._input_multiline():
             line_num += 1
             self.insert_line(line_num, line)
@@ -190,31 +244,20 @@ class Atto(TextBuffer):
 
     def change(self, **kwargs):
         """
-        Replace line with new line.
+        Replace line(s) with new line(s).
         """
-        line_num = kwargs.get('start')
-        if line_num == None:
-            return False
-        text = input(self.text_prompt)
-        self.update_line(line_num, text)
+        self.delete(**kwargs)
+        self.insert(**kwargs)
 
     def delete(self, **kwargs):
         """
         Remove a range of lines from the buffer.
         """
-        start = kwargs.get('start')
-        stop = kwargs.get('stop')
-        if start == None or start > len(self._buffer):
+        start = kwargs.get('start') or self._current_line
+        stop = kwargs.get('stop') or start
+        if self._is_valid_addr(start, stop) == False:
             return False
-        if stop == None:
-            stop = start
-        if stop > len(self._buffer):
-            return False
-
-        line_num = start
-        while line_num <= stop:
-            self.delete_line(start)  # Not a mistake. Lines move up as removed.
-            line_num += 1
+        self.delete_range(start, stop)
         self._current_line = start
 
     def edit(self, **kwargs):
@@ -244,7 +287,7 @@ class Atto(TextBuffer):
         Show current filename or replace if param is present
         """
         new_name = kwargs.get('param')
-        if new_name != None:
+        if new_name != '':
             self.filename = new_name
         else:
             stdout.write((self.filename or '(none)') + '\n')
@@ -253,9 +296,11 @@ class Atto(TextBuffer):
         """
         Add new lines after the indicated line number.
         """
-        line_num = kwargs.get('start')
-        if line_num == None or line_num < 1:
+        start = kwargs.get('start') or self._current_line
+        if self._is_valid_addr(start) == False:
             return False
+
+        line_num = start
         for line in self._input_multiline():
             self.insert_line(line_num, line)
             line_num += 1
@@ -267,18 +312,36 @@ class Atto(TextBuffer):
         """
         start = kwargs.get('start') or self._current_line
         stop = kwargs.get('stop') or self._current_line
-        if start > len(self._buffer) or stop > len(self._buffer):
+        if self._is_valid_addr(start, stop) == False:
             return False
+
         self._buffer[start-1:stop] = [''.join(self._buffer[start-1:stop])]
+        self._current_line = start
+        self._is_dirty = True
+
+    def move(self, **kwargs):
+        """
+        Like transfer but remove the source range after the copy.
+        """
+        start = kwargs.get('start')
+        stop = kwargs.get('stop') or start
+        dest = kwargs.get('param')
+        if self._is_valid_addr(start, stop) == False:
+            return False
+        self.copy_range(start, stop, dest)
+        offset = stop - start + 1 if (dest < start) else 0
+        self.delete_range(start+offset, stop+offset)
+        self._current_line = dest - 1 + stop - start
 
     def number(self, **kwargs):
         """
         Print lines prefixed with line numbers.
         """
         start = kwargs.get('start') or self._current_line
-        stop = kwargs.get('stop') or self._current_line
-        if start > len(self._buffer) or stop > len(self._buffer):
+        stop = kwargs.get('stop') or start
+        if self._is_valid_addr(start, stop) == False:
             return False
+
         if stop < 10:
             line_num_field = '{:>1d}'
         elif stop < 100:
@@ -287,6 +350,7 @@ class Atto(TextBuffer):
             line_num_field = '{:>3d}'
         else:
             line_num_field = '{:>4d}'
+
         line_num = start
         while line_num <= stop:
             stdout.write(line_num_field.format(line_num) + ' ')
@@ -298,10 +362,11 @@ class Atto(TextBuffer):
         Display a range of buffer lines, possibly truncated to fit.
         """
         start = kwargs.get('start') or self._current_line
-        stop = kwargs.get('stop') or self._current_line
+        stop = kwargs.get('stop') or start
         line_length = kwargs.get('line_length')
-        if start > len(self._buffer) or stop > len(self._buffer):
+        if self._is_valid_addr(start, stop) == False:
             return False
+
         line_num = start
         while line_num <= stop:
             if line_length == None:
@@ -311,19 +376,34 @@ class Atto(TextBuffer):
             line_num += 1
 
     def quit(self, **kwargs):
-        if self._is_dirty == True:
-            stdout.write('Unsaved changes exist. Use uppercase Q to override.\n')
-        else:
+        if self._is_dirty == False or kwargs.get('param') == '!':
             self.quit_unconditional()
+        else:
+            stdout.write('Unsaved changes exist. Use uppercase Q to override.\n')
 
     def quit_unconditional(self, **kwargs):
         del self._buffer
         exit(0)
 
+    def show_current_line(self, **kwargs):
+        stdout.write(str(self._current_line) + '\n')
+
     def toggle_verbosity(self, **kwargs):
         self.verbose = not self.verbose
         state = 'on' if self.verbose else 'off'
         stdout.write('Verbose messages: {}\n'.format(state))
+
+    def transfer(self, **kwargs):
+        """
+        Copy lines start..stop to the line after dest.
+        """
+        start = kwargs.get('start')
+        stop = kwargs.get('stop') or start
+        dest = kwargs.get('param')
+        if self._is_valid_addr(start, stop) == False:
+            return False
+        self.copy_range(start, stop, dest)
+        self._current_line = dest + stop - start + 1
 
     def write(self, **kwargs):
         """
@@ -370,7 +450,9 @@ class Atto(TextBuffer):
             addr2 = addr1
 
         param = cmd_string[cmd_location+1:].strip()
-        if param == '.':
+        if param.isdigit() == True:
+            param = int(param)
+        elif param == '.':
             param = self._current_line
         elif param == '$':
             param = len(self._buffer)
@@ -383,6 +465,7 @@ class Atto(TextBuffer):
         """
         cmd_functions = {
             '?': self.help,
+            '=': self.show_current_line,
             'a': self.append,
             'c': self.change,
             'd': self.delete,
@@ -392,10 +475,12 @@ class Atto(TextBuffer):
             'H': self.toggle_verbosity,
             'i': self.insert,
             'j': self.join,
+            'm': self.move,
             'n': self.number,
             'p': self.print,
             'q': self.quit,
             'Q': self.quit_unconditional,
+            't': self.transfer,
             'w': self.write
         }
 

@@ -4,13 +4,14 @@ from atto import TextBuffer
 class TestTextBuffer(unittest.TestCase):
     def __init__(self):
         self.b = TextBuffer()
+        self.b.verbose = False
 
-    def test_instantiation(self):
+    def test_instantiatiation(self):
         self.assertEqual(self.b._buffer, [])
         self.assertEqual(self.b._is_dirty, False)
         self.assertEqual(self.b.filename, None)
         self.assertEqual(self.b.__str__(), '')
-    
+
     def test_insert_line(self):
         self.b.insert_line(1, 'World')
         self.assertEqual(self.b._buffer[0], 'World')
@@ -51,6 +52,26 @@ class TestTextBuffer(unittest.TestCase):
         self.assertEqual(self.b._is_dirty, False)
         self.assertEqual(self.b.filename, None)
         self.assertEqual(self.b.__str__(), '')
+
+    def test_copy_range(self):
+        self.b._buffer = ['one', 'two', 'three', 'four']
+        self.b.copy_range(1, 2, 4)
+        self.assertEqual(self.b._buffer, ['one', 'two', 'three', 'four', 'one', 'two'])
+
+    def test_delete_range(self):
+        self.b._buffer = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
+        self.b.delete_range(3, 5)
+        self.assertEqual(self.b._buffer, ['one', 'two', 'six', 'seven'])
+
+    def test_move_range_ahead(self):
+        self.b._buffer = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
+        self.b.move_range(3, 5, 1)
+        self.assertEqual(self.b._buffer, ['one', 'three', 'four', 'five', 'two', 'six', 'seven'])
+
+    def test_move_range_behind(self):
+        self.b._buffer = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
+        self.b.move_range(3, 5, 6)
+        self.assertEqual(self.b._buffer, ['one', 'two', 'six', 'three', 'four', 'five', 'seven'])
 
 if __name__ == '__main__':
     unittest.main()
