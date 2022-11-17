@@ -37,6 +37,8 @@ class TextBuffer:
         Return the first line number (from start) that contains expr.
         Return None if not found.
         """
+        found = None
+        line_num = None  # in case start > buffer length
         for line_num in range(start, len(self._buffer)+1):
             line = self.get_line(line_num)
             found = search(expr, line)

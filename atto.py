@@ -292,16 +292,23 @@ class Atto(TextBuffer):
         # RegEx address format can be '/expr' or '/expr/'
         # 'expr' and any / will be replaced by address of first match.
         # Search starts from current line and wraps around if needed.
+        # If nothing found, return bad address to trigger error msg.
         if cmd_string.startswith('/') == True:
             closing_slash_position = cmd_string.find('/', 1)
             if closing_slash_position == -1:
                 expr = cmd_string[1:]
-                line_num = self.find_line(expr, self._current_line) or self.find_line(expr)
-                cmd_string = cmd_string.replace('/'+expr, str(line_num))
+                line_num = self.find_line(expr, self._current_line+1) or self.find_line(expr)
+                if line_num != None:
+                    cmd_string = cmd_string.replace('/'+expr, str(line_num))
+                else:
+                    return -1, None, 'p', None
             else:
                 expr = cmd_string[1:closing_slash_position]
-                line_num = self.find_line(expr, self._current_line) or self.find_line(expr)
-                cmd_string = cmd_string.replace('/'+expr+'/', str(line_num))
+                line_num = self.find_line(expr, self._current_line+1) or self.find_line(expr)
+                if line_num != None:
+                    cmd_string = cmd_string.replace('/'+expr+'/', str(line_num))
+                else:
+                    return -1, None, 'p', None
 
         # Numeric format can be a single line number, like {n}
         # or a range, like {n1},{n2} Addresses can have the familiar ed/vi

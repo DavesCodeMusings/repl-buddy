@@ -46,6 +46,10 @@ class TestTextBuffer(unittest.TestCase):
         self.assertEqual(self.b.find_line('f', 5), 5)
         self.assertEqual(self.b.find_line('f', 6), None)
 
+    def test_find_bad_start(self):
+        self.b._buffer = ['one', 'two', 'three', 'four', 'five', 'six']
+        self.assertEqual(self.b.find_line('two', start=99), None)
+
     def test_save(self):
         self.b.save('/tests/text_buffer_temp.txt')
         self.assertEqual(self.b._is_dirty, False)
