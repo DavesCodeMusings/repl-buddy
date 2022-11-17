@@ -152,8 +152,6 @@ q           Quit
 w [path]    Write (save) buffer to file
 ```
 
-
-
 ## What's with the name?
 _atto_ (combining form)
     _a metric system unit prefix denoting 10 to the -18 power_
