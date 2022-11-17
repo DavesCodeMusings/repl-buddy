@@ -46,23 +46,24 @@ class ANSI:
     KEY_PPAGE = 0x153  # Prev page (PgUp)
     KEY_END = 0x168
 
-    keypad_sequence = {}
-    keypad_sequence['A'] = KEY_UP
-    keypad_sequence['B'] = KEY_DOWN
-    keypad_sequence['C'] = KEY_RIGHT
-    keypad_sequence['D'] = KEY_LEFT
-    keypad_sequence['F'] = KEY_END
-    keypad_sequence['H'] = KEY_HOME
-    keypad_sequence['1~'] = KEY_HOME
-    keypad_sequence['2~'] = KEY_IC
-    keypad_sequence['3~'] = KEY_DC
-    keypad_sequence['4~'] = KEY_END
-    keypad_sequence['5~'] = KEY_PPAGE
-    keypad_sequence['6~'] = KEY_NPAGE
-    keypad_sequence['11~'] = KEY_F1
-    keypad_sequence['12~'] = KEY_F2
-    keypad_sequence['13~'] = KEY_F3
-    keypad_sequence['14~'] = KEY_F4
+    keypad_sequence = {
+        'A': KEY_UP,
+        'B': KEY_DOWN,
+        'C': KEY_RIGHT,
+        'D': KEY_LEFT,
+        'F': KEY_END,
+        'H': KEY_HOME,
+        '1~': KEY_HOME,
+        '2~': KEY_IC,
+        '3~': KEY_DC,
+        '4~': KEY_END,
+        '5~': KEY_PPAGE,
+        '6~': KEY_NPAGE,
+        '11~': KEY_F1,
+        '12~': KEY_F2,
+        '13~': KEY_F3,
+        '14~': KEY_F4,
+    }
 
     # Escape sequences
     ESC = '\x1B'
