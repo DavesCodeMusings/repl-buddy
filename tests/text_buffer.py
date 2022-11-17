@@ -36,6 +36,16 @@ class TestTextBuffer(unittest.TestCase):
         self.assertEqual(self.b._buffer[0], 'World')
         self.assertEqual(self.b._is_dirty, True)
 
+    def test_find_line(self):
+        self.b._buffer = ['one', 'two', 'three', 'four', 'five', 'six']
+        self.assertEqual(self.b.find_line('two'), 2)
+        self.assertEqual(self.b.find_line('ee'), 3)
+        self.assertEqual(self.b.find_line('^ee'), None)
+        self.assertEqual(self.b.find_line('ee$'), 3)
+        self.assertEqual(self.b.find_line('f'), 4)
+        self.assertEqual(self.b.find_line('f', 5), 5)
+        self.assertEqual(self.b.find_line('f', 6), None)
+
     def test_save(self):
         self.b.save('/tests/text_buffer_temp.txt')
         self.assertEqual(self.b._is_dirty, False)

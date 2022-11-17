@@ -289,6 +289,24 @@ class Atto(TextBuffer):
         if (cmd_string == None or cmd_string == ''):
             return None, None, None, None
 
+        # RegEx address format can be '/expr' or '/expr/'
+        # 'expr' and any / will be replaced by address of first match.
+        # Search starts from current line and wraps around if needed.
+        if cmd_string.startswith('/') == True:
+            closing_slash_position = cmd_string.find('/', 1)
+            if closing_slash_position == -1:
+                expr = cmd_string[1:]
+                line_num = self.find_line(expr, self._current_line) or self.find_line(expr)
+                cmd_string = cmd_string.replace('/'+expr, str(line_num))
+            else:
+                expr = cmd_string[1:closing_slash_position]
+                line_num = self.find_line(expr, self._current_line) or self.find_line(expr)
+                cmd_string = cmd_string.replace('/'+expr+'/', str(line_num))
+
+        # Numeric format can be a single line number, like {n}
+        # or a range, like {n1},{n2} Addresses can have the familiar ed/vi
+        # characters like . % $  There is also > which equates to the range
+        # of current_line to current_line+20 which is useful for paging. 
         cmd_location = 0
         for ch in cmd_string:
             if ch not in '0123456789$%,.>':  # all valid address range chars
@@ -318,10 +336,16 @@ class Atto(TextBuffer):
                 addr1 = int(addr_range)
                 addr2 = None
 
+        # Commands are single-character and mimic ed's commands. When
+        # no command exists, the default action is to 'print' the line.
         cmd = cmd_string[cmd_location:cmd_location+1]
-        if cmd == '':  # mimic ed's default action
+        if cmd == '':
             cmd = 'p'
 
+        # The single parameter that follows the command is multi-use.
+        # In some cases it can be a destination address (move, transfer)
+        # or a file path in others (edit, write).
+        # The . and $ substitutions are valid here, but not %
         param = cmd_string[cmd_location+1:].strip()
         if param.isdigit() == True:
             param = int(param)

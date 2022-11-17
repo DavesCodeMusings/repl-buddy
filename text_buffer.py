@@ -1,4 +1,5 @@
 from sys import stdout
+from re import search
 
 class TextBuffer:
     """
@@ -16,6 +17,33 @@ class TextBuffer:
     def __str__(self):
         return '\n'.join(self._buffer)    
 
+    def delete_line(self, line_num):
+        """
+        Purge the line in the buffer indicated by the line number.
+        """
+        buffer_index = line_num - 1
+        del self._buffer[buffer_index]
+        self._is_dirty = True
+
+    def get_line(self, line_num):
+        """
+        Retrieve the line indicated by line number.
+        """
+        buffer_index = line_num - 1
+        return self._buffer[buffer_index]
+
+    def find_line(self, expr, start=1):
+        """
+        Return the first line number (from start) that contains expr.
+        Return None if not found.
+        """
+        for line_num in range(start, len(self._buffer)+1):
+            line = self.get_line(line_num)
+            found = search(expr, line)
+            if found != None:
+                break
+        return line_num if (found !=None) else None
+
     def insert_line(self, line_num, text):
         """
         Add a line of text to the buffer at the indicated line number.
@@ -27,27 +55,12 @@ class TextBuffer:
         self._buffer.insert(buffer_index, text.rstrip('\r\n'))
         self._is_dirty = True
 
-    def get_line(self, line_num):
-        """
-        Retrieve the line indicated by line number.
-        """
-        buffer_index = line_num - 1
-        return self._buffer[buffer_index]
-
     def update_line(self, line_num, text):
         """
         Replace the line indicated by the line number with new text.
         """
         buffer_index = line_num - 1
         self._buffer[buffer_index] = text.rstrip('\r\n')
-        self._is_dirty = True
-
-    def delete_line(self, line_num):
-        """
-        Purge the line in the buffer indicated by the line number.
-        """
-        buffer_index = line_num - 1
-        del self._buffer[buffer_index]
         self._is_dirty = True
 
     def copy_range(self, start, stop, dest):

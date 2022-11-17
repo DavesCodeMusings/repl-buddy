@@ -5,24 +5,44 @@ from atto import Atto
 class TestAttoParser(unittest.TestCase):
     def __init__(self):
         self.e = Atto()
-        self.e._buffer = {
+        self.e._buffer = [
             'How are you gentlemen?',
             'All your base are belong to us!',
             'You are on the way to destruction.',
             'You have no chance to survive. Make your time.'
-        }
+        ]
         self.e._current_line = len(self.e._buffer)
 
     def test_single_addr_only(self):
-        addr = randint(1,99)
-        cmd_string = '{:d}'.format(addr)
-        self.assertEqual(self.e.parse(cmd_string), (addr, addr, 'p', ''))
+        test_addr = randint(1,99)
+        cmd_string = '{:d}'.format(test_addr)
+        addr1, addr2, cmd, param = self.e.parse(cmd_string)
+        self.assertEqual(addr1, test_addr)
+        self.assertEqual(addr2, None)
+        self.assertEqual(cmd, 'p')
+        self.assertEqual(param, '')
 
     def test_addr_range_only(self):
-        addr1 = randint(1,50)
-        addr2 = randint(51,100)
-        cmd_string = '{:d},{:d}'.format(addr1, addr2)
-        self.assertEqual(self.e.parse(cmd_string), (addr2, addr2, 'p', ''))
+        test_addr1 = randint(1,50)
+        test_addr2 = randint(51,100)
+        cmd_string = '{:d},{:d}'.format(test_addr1, test_addr2)
+        addr1, addr2, cmd, param = self.e.parse(cmd_string)
+        self.assertEqual(addr1, test_addr1)
+        self.assertEqual(addr2, test_addr2)
+        self.assertEqual(cmd, 'p')
+        self.assertEqual(param, '')
+
+    def test_regex_addr_only(self):
+        addr1, addr2, cmd, param = self.e.parse('/All')
+        self.assertEqual(addr1, 2)
+        self.assertEqual(addr2, None)
+        self.assertEqual(cmd, 'p')
+        self.assertEqual(param, '')
+        addr1, addr2, cmd, param = self.e.parse('/you')
+        self.assertEqual(addr1, 4)
+        self.assertEqual(addr2, None)
+        self.assertEqual(cmd, 'p')
+        self.assertEqual(param, '')
 
     def test_cmd_only(self):
         self.assertEqual(self.e.parse('f'), (None, None, 'f', ''))
@@ -43,6 +63,13 @@ class TestAttoParser(unittest.TestCase):
         addr2 = randint(51,100)
         cmd_string = '{:d},{:d}n'.format(addr1, addr2)
         self.assertEqual(self.e.parse(cmd_string), (addr1, addr2, 'n', ''))
+
+    def test_regex_with_cmd(self):
+        addr1, addr2, cmd, param = self.e.parse('/gentlemen/n')
+        self.assertEqual(addr1, 1)
+        self.assertEqual(addr2, None)
+        self.assertEqual(cmd, 'n')
+        self.assertEqual(param, '')
 
     def test_addr_range_cmd_param(self):
         addr1 = randint(1, 50)

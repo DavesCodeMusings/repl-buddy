@@ -2,6 +2,7 @@
   "urls": [
     ["ansi.py", "github:DavesCodeMusings/repl-buddy/ansi.py"],
     ["command.py", "github:DavesCodeMusings/repl-buddy/command.py"],
+    ["text_buffer.py", "github:DavesCodeMusings/repl-buddy/text_buffer.py"],
     ["atto.py", "github:DavesCodeMusings/repl-buddy/atto.py"]
   ],
   "version": "1.8"
