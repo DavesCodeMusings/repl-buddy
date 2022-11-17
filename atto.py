@@ -27,7 +27,7 @@ class Atto(TextBuffer):
             '.           current line',
             '$           last line',
             '%           all lines 1,$',
-            '/regexp     next matching line',
+            '/regexp/    next matching line',
             '',
             'Command Summary',
             '---------------------------------------',
