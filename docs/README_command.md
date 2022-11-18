@@ -89,3 +89,38 @@ You can fix it with a couple lines in `boot.py`
 from ntptime import settime
 settime()
 ```
+
+### Some important notes about `recv()`
+`recv()` has no equivalent command in the *nix shell. It takes the place
+of using `cat<<EOF >filename.txt` to send STDIN to a file. It offers a
+convenient way to upload text files (including MicroPython code) to the
+microcontroller by pasting into the terminal.
+
+Using just `recv()` with no parameters writes the pasted input to a file
+called recv.txt. Input capture is terminated by entering the string 'EOF'
+on a line by itself.
+
+The filename can be changed with a parameter as shown in this example:
+`recv('settings.json')`
+
+The end of file marker can be changed as well: `recv(eof_marker='DONE')`
+
+Or you can do both at once: `recv('settings.json', 'DONE')`
+
+#### Caveats concerning recv() and IDE
+Using `recv()` from Thonny results in an extra blank line after every line
+of text for some reason. This does not happen when using mpremote.
+
+When using mpremote, there is no echo to the terminal from REPL, so you
+are flying blind when pasting. If you use Windows Terminal, it will let
+you preview what's being pasted. But, it will also try to be helpful and
+truncate extra newlines from the end. This makes it hard to put EOF on a
+line by itself. Alway press ENTER before and after typing your EOF
+sequence into Windows Terminal and you'll be fine.
+
+Using PuTTY to connect to the REPL over a serial port offers the best
+experience for uploading files using `recv()`. There's still no echo of
+what you paste, but you don't have to worry about PuTTY truncating extra
+newlines. Just paste the contents of the clipboard and enter EOF at the
+end.
+
