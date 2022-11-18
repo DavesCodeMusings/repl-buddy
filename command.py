@@ -162,6 +162,25 @@ def run(filename=None):
     else:
         exec(open(filename).read())
 
+def select(*args, title=None, prompt='#? '):
+    if title != None:
+        print(title)
+        
+    num_field = '{:2d})' if (len(args) > 10) else '{:1d})'
+
+    item_num = 1
+    for item_label in args:
+        print(num_field.format(item_num), item_label)
+        item_num += 1
+
+    response = input(prompt)
+    if response.isdigit() and int(response) > 0 and int(response) <= len(args):
+        choice = args[int(response)-1]
+    else:
+        choice = None
+
+    return choice
+
 def touch(filename=None):
     if filename == None:
         print("Usage: touch('FILENAME')")

@@ -5,5 +5,5 @@
     ["text_buffer.py", "github:DavesCodeMusings/repl-buddy/text_buffer.py"],
     ["atto.py", "github:DavesCodeMusings/repl-buddy/atto.py"]
   ],
-  "version": "1.8"
+  "version": "1.9"
 }

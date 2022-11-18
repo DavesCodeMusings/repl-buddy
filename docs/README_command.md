@@ -57,7 +57,9 @@ See the list below for specifics.
 * `rmdir(DIRNAME)`
     delete DIRNAME, but only if it's empty
 * `run(FILENAME)`
-    execute the Python script given by FILENAME 
+    execute the Python script given by FILENAME
+* `select(CHOICE1, [CHOICE2], ...)`
+    present a numbered list of choices and return the chosen value
 * `touch(FILENAME)`
     create a new, empty file or change the modification time stamp on
     an existing file
