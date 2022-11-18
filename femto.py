@@ -1,67 +1,70 @@
 from sys import stdin, stdout, exit
 from ansi import ANSI
-from atto import Atto
+from text_buffer import TextBuffer
 
-class Femto(Atto):
+class Femto(TextBuffer):
     KEY_CTRL_N = 0x0E
     KEY_CTRL_R = 0x12
     KEY_CTRL_W = 0x17
     KEY_CTRL_X = 0x18
 
-    def _set_title(self, message):
+    def _set_title(self, msg):
         """
         Show message on the top line in dimmed color.
         """
-        cursor_save = self.terminal.cursor
-        self.terminal.cursor = (1, 1)
+        self.terminal.save_cursor()
+        col = int((self.terminal.cols - len(msg)) / 2)
+        self.terminal.cursor = (1, col)
         self.terminal.clear_line()
-        starting_column = int((self.terminal.cols - len(message)) / 2)
-        self.terminal.cursor = (1, starting_column)
-        self.terminal.style = ANSI.A_DIM
-        stdout.write(message)
-        self.terminal.style = ANSI.A_NORMAL
-        self.terminal.cursor = cursor_save
+        self.terminal.style = ANSI.DIM
+        stdout.write(msg)
+        self.terminal.restore_cursor()
 
-    def _set_status(self, message):
+    def _set_status(self, msg):
         """
         Show message on the bottom line in dimmed color.
         """
-        cursor_save = self.terminal.cursor
-        self.terminal.cursor = (self.terminal.lines, 1)
-        self.terminal.style = ANSI.A_DIM
-        stdout.write(message)
-        self.terminal.style = ANSI.A_NORMAL
-        self.terminal.cursor = cursor_save
+        self.terminal.save_cursor()
+        self.terminal.cursor = (self.terminal.lines, 0)
+        self.terminal.clear_line()
+        self.terminal.style = ANSI.DIM
+        stdout.write(msg)
+        self.terminal.restore_cursor()
 
     def _get_input(self, prompt):
         """
         Show prompt and capture user reply.
         """
-        cursor_save = self.terminal.cursor
+        self.terminal.save_cursor()
         self.terminal.cursor = (self.terminal.lines, 1)
         self.terminal.clear_line()
-        self.terminal.style = ANSI.A_BOLD
+        self.terminal.style = ANSI.BOLD
         stdout.write(prompt)
-        self.terminal.style = ANSI.A_NORMAL
+        self.terminal.style = ANSI.NORMAL
         reply = input()
-        self.terminal.cursor = cursor_save
+        self.terminal.restore_cursor()
         return reply
 
     def _show_coords(self):
-        cursor_save = self.terminal.cursor
+        self.terminal.save_cursor()
+        row, col = self.terminal.cursor
         self.terminal.cursor = (self.terminal.lines, self.terminal.cols-16)
-        stdout.write(ANSI.CSI+ANSI.EL0)  # clear to end of line
-        self.terminal.style = ANSI.A_DIM
-        stdout.write('Ln {:d}, Col {:d}'.format(self._current_line, cursor_save[1]))
-        self.terminal.style = ANSI.A_NORMAL
-        self.terminal.cursor = cursor_save
+        self.terminal.clear_line(before_cursor=False, after_cursor=True)
+        self.terminal.style = ANSI.DIM
+        stdout.write('Ln {:d}, Col {:d}'.format(row, col))
+        self.terminal.style = ANSI.NORMAL
+        self.terminal.restore_cursor()
 
     def _refresh_screen(self):
         self.terminal.clear(clear_scrollback=True)
-        self._set_title(self.filename)
+        self._set_title(self.filename or '(none)')
         self.terminal.cursor = (2,1)
-        stop_line = min(self._current_line+self.terminal.lines-3, len(self._buffer))
-        self.print(start=self._current_line, stop=stop_line, line_length=self.terminal.cols)
+        for line_num in range(1, self.terminal.lines-2):
+            line = self.get_line(line_num)
+            if (line != None):
+                stdout.write(line)
+                if line_num < self.terminal.lines - 3:
+                    stdout.write('\n')
         self._set_status('[^N]ew [^R]ead [^W]rite e[^X]it')
         self._show_coords()
 
@@ -136,6 +139,7 @@ class Femto(Atto):
         """
         self.terminal = ANSI()
         self.terminal.echo = False
+        self.terminal.scroll_region = (2, 22)
         self._current_line = len(self._buffer) or 1
         self._refresh_screen()
 
