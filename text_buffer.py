@@ -22,15 +22,22 @@ class TextBuffer:
         Purge the line in the buffer indicated by the line number.
         """
         buffer_index = line_num - 1
-        del self._buffer[buffer_index]
-        self._is_dirty = True
+        if buffer_index > 0 and buffer_index < len(self._buffer):
+            del self._buffer[buffer_index]
+            self._is_dirty = True
+            return True
+        else:
+            return False
 
     def get_line(self, line_num):
         """
         Retrieve the line indicated by line number.
         """
         buffer_index = line_num - 1
-        return self._buffer[buffer_index]
+        if buffer_index >= 0 and buffer_index < len(self._buffer):
+            return self._buffer[buffer_index]
+        else:
+            return None
 
     def find_line(self, expr, start=1):
         """
