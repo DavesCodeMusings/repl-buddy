@@ -2,38 +2,106 @@ from sys import stdin, stdout
 from re import match
 from select import poll, POLLIN
 
+"""
+Basic cursor and color control for ANSI terminals.
+
+References:
+    https://en.wikipedia.org/wiki/ANSI_escape_code
+    https://ispltd.org/mini_howto/ansi_terminal_codes
+    https://www2.ccs.neu.edu/research/gpc/VonaUtils/vona/terminal/vtansi.htm
+"""
+
+class Cursor:
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        line, col = self.get_coord()
+        return 'Ln: {:d}, Col: {:d}'.format(line, col)
+
+    def get_coord(self):
+        """
+        Return cursor (line, col) coordinates as a tuple.
+        """
+        stdout.write(ANSI.CSI + '6n')
+        reply = ''  # Expecting reply with no newline in the form: 'ESC[{line};{col}R'
+        while True:
+            ch = stdin.read(1)
+            reply += ch
+            if (ch == 'R'):
+                break
+
+        reply = reply.lstrip(ANSI.CSI)
+        if (match('[0-9]+;[0-9]+R', reply)):
+            reply = reply.rstrip('R')
+            line, col = reply.split(';')
+        else:
+            line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
+
+        return int(line), int(col)
+
+    def set_coord(self, line_col):
+        """
+        Move cursor to new line, col coordinates.
+        """
+        line, col = line_col
+        stdout.write(ANSI.CSI + '{:d};{:d}H'.format(line, col))
+
+    coord = property(get_coord, set_coord)
+
+    def show(self):
+        """
+        Make the cursor visible on the terminal screen.
+        """
+        stdout.write(ANSI.CSI + '?25h')
+
+    def hide(self):
+        """
+        Remove the cursor from the screen.
+        """
+        stdout.write(ANSI.CSI + '?25l')
+
+    def save(self):
+        """
+        Ask terminal to save the cursor position, text attributes, and colors.
+        """
+        stdout.write(ANSI.ESC + '7')
+
+    def restore(self):
+        """
+        Restore the previously saved position, attributes, and colors.
+        """
+        stdout.write(ANSI.ESC + '8')
+
+
 class ANSI:
-    """
-    Basic cursor and color control for ANSI terminals.
-
-    References:
-        https://en.wikipedia.org/wiki/ANSI_escape_code
-        https://ispltd.org/mini_howto/ansi_terminal_codes
-        https://www2.ccs.neu.edu/research/gpc/VonaUtils/vona/terminal/vtansi.htm
-    """
-
     # Escape sequences
     ESC = '\x1B'
     CSI = ESC + '['     # Control Sequence Introducer
 
     # Text attibutes
-    NORMAL = 0
+    NORMAL = 0  # cancel all attributes and colors
     BOLD = 1
     DIM = 2
     UNDERLINE = 4
     INVERSE = 7
+    NOT_BOLD = 22
+    NOT_DIM = 22
+    NOT_UNDERLINE = 24
+    NOT_INVERSE = 27
 
     # Basic 3-bit colors
-    COLOR_BLACK = 0
-    COLOR_RED = 1
-    COLOR_GREEN = 2
-    COLOR_YELLOW = 3
-    COLOR_BLUE = 4
-    COLOR_MAGENTA = 5
-    COLOR_CYAN = 6
-    COLOR_WHITE = 7
+    BLACK = 0
+    RED = 1
+    GREEN = 2
+    YELLOW = 3
+    BLUE = 4
+    MAGENTA = 5
+    CYAN = 6
+    WHITE = 7
 
     # Non-alpha-numeric keys
+    KEY_ENTER = 0x0A
     KEY_ESC = 0x1B
     KEY_DOWN = 0x102
     KEY_UP = 0x103
@@ -72,10 +140,10 @@ class ANSI:
     }
 
     def __init__(self):
-        self.reset()
-        self.cursor = (1,1)
+        self.cursor = Cursor()
         self.echo = True
         self.use_keypad = True
+        self.reset()
 
     ### Entire Screen ###
 
@@ -84,9 +152,9 @@ class ANSI:
         Reset terminal and probe for terminal dimensions. Clears screen.
         """
         stdout.write(ANSI.ESC + 'c')
-        self.cursor = (999,999)              # Move cursor far past screen limits.
-        self.lines, self.cols = self.cursor  # It will stop at (last line, last col).
-        self.cursor = (1,1)
+        self.cursor.coord = (999,999)  # It will stop at (last line, last col).
+        self.lines, self.cols = self.cursor.coord
+        self.cursor.coord = (1,1)
 
     def clear(self,  before_cursor=True, after_cursor=True, clear_scrollback=False):
         """
@@ -127,50 +195,6 @@ class ANSI:
     def scroll_down(self):
         stdout.write(ANSI.CSI + 'T')
 
-    ### Cursor Control ###
-
-    def get_cursor(self):
-        """
-        Return cursor (line, col) coordinates as a tuple.
-        """
-        stdout.write(ANSI.CSI + '6n')
-        reply = ''  # Expecting reply with no newline in the form: 'ESC[{line};{col}R'
-        while True:
-            ch = stdin.read(1)
-            reply += ch
-            if (ch == 'R'):
-                break
-
-        reply = reply.lstrip(ANSI.CSI)
-        reply = reply.rstrip('R')
-        if (match('[0-9]+;[0-9]+', reply)):
-            line, col = reply.split(';')
-        else:
-            line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
-
-        return int(line), int(col)
-
-    def set_cursor(self, line_col):
-        """
-        Move cursor to new line, col.
-        """
-        line, col = line_col
-        stdout.write(ANSI.CSI + '{:d};{:d}H'.format(line, col))
-
-    cursor = property(get_cursor, set_cursor)
-
-    def save_cursor(self):
-        """
-        Ask terminal to save the cursor position, text attributes, and colors.
-        """
-        stdout.write(ANSI.ESC + '7')
-
-    def restore_cursor(self):
-        """
-        Restore the previously saved position, attributes, and colors.
-        """
-        stdout.write(ANSI.ESC + '8')
-
     ### Individual Lines ###
 
     def clear_line(self, before_cursor=True, after_cursor=True):
@@ -187,9 +211,15 @@ class ANSI:
 
         stdout.write(ANSI.CSI + control_sequence)
 
+    def next_line(self):
+        """
+        Go to the next line and position the cursor at the beginning.
+        """
+        stdout.write(ANSI.CSI + 'E')
+
     ### Individual Characters ###
 
-    def set_attributes(self, attributes_triplet=(NORMAL, COLOR_WHITE, COLOR_BLACK)):
+    def set_attributes(self, attributes_triplet=(NORMAL, WHITE, BLACK)):
         """
         Define text style (bold, inverse, etc.) and colors. Refer to
         predefined attribute and color constants for possible values.
@@ -212,12 +242,12 @@ class ANSI:
 
     attributes = property(None, set_attributes, clear_attributes)
 
-    def set_color(self, color_pair=(COLOR_WHITE, COLOR_BLACK)):
+    def set_color(self, color_pair=(WHITE, BLACK)):
         """
         Set the foreground and background colors. Refer to predefined
         color constants for possible values.
         """
-        if len(color_pair != 2):
+        if len(color_pair) != 2:
             return False
         fg_color, bg_color = color_pair
         stdout.write(ANSI.CSI + '{:d};{:d}m'.format(fg_color+30, bg_color+40))

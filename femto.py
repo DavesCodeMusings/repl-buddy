@@ -12,58 +12,60 @@ class Femto(TextBuffer):
         """
         Show message on the top line in dimmed color.
         """
-        self.terminal.save_cursor()
+        self.terminal.cursor.save()
         col = int((self.terminal.cols - len(msg)) / 2)
-        self.terminal.cursor = (1, col)
+        self.terminal.cursor.coord = (1, col)
         self.terminal.clear_line()
         self.terminal.style = ANSI.DIM
         stdout.write(msg)
-        self.terminal.restore_cursor()
+        self.terminal.cursor.restore()
 
     def _set_status(self, msg):
         """
         Show message on the bottom line in dimmed color.
         """
-        self.terminal.save_cursor()
-        self.terminal.cursor = (self.terminal.lines, 0)
+        self.terminal.cursor.save()
+        self.terminal.cursor.coord = (self.terminal.lines, 0)
         self.terminal.clear_line()
         self.terminal.style = ANSI.DIM
         stdout.write(msg)
-        self.terminal.restore_cursor()
+        self.terminal.cursor.restore()
 
     def _get_input(self, prompt):
         """
         Show prompt and capture user reply.
         """
-        self.terminal.save_cursor()
-        self.terminal.cursor = (self.terminal.lines, 1)
+        self.terminal.cursor.save()
+        self.terminal.cursor.coord = (self.terminal.lines, 1)
         self.terminal.clear_line()
         self.terminal.style = ANSI.BOLD
         stdout.write(prompt)
         self.terminal.style = ANSI.NORMAL
         reply = input()
-        self.terminal.restore_cursor()
+        self.terminal.cursor.restore()
         return reply
 
     def _show_coords(self):
-        self.terminal.save_cursor()
-        row, col = self.terminal.cursor
-        self.terminal.cursor = (self.terminal.lines, self.terminal.cols-16)
+        current_cursor = str(self.terminal.cursor)
+        self.terminal.cursor.save()
+        self.terminal.cursor.hide()
+        self.terminal.cursor.coord = (self.terminal.lines, self.terminal.cols-16)
         self.terminal.clear_line(before_cursor=False, after_cursor=True)
         self.terminal.style = ANSI.DIM
-        stdout.write('Ln {:d}, Col {:d}'.format(row, col))
+        stdout.write(current_cursor)
         self.terminal.style = ANSI.NORMAL
-        self.terminal.restore_cursor()
+        self.terminal.cursor.restore()
+        self.terminal.cursor.show()
 
     def _refresh_screen(self):
         self.terminal.clear(clear_scrollback=True)
         self._set_title(self.filename or '(none)')
-        self.terminal.cursor = (2,1)
-        for line_num in range(1, self.terminal.lines-2):
+        self.terminal.cursor.coord = (2,1)
+        for line_num in range(1, self.terminal.lines-1):
             line = self.get_line(line_num)
             if (line != None):
                 stdout.write(line)
-                if line_num < self.terminal.lines - 3:
+                if line_num < self.terminal.lines - 2:
                     stdout.write('\n')
         self._set_status('[^N]ew [^R]ead [^W]rite e[^X]it')
         self._show_coords()
@@ -100,14 +102,16 @@ class Femto(TextBuffer):
             prompt = 'Exit [y/N]? '
             confirm = self._get_input(prompt)
             if (confirm == 'y' or confirm == 'Y'):
+                del self.terminal.scroll_region
                 self.terminal.clear(clear_scrollback=True)
+                self.terminal.cursor.coord = (1,1)
                 exit(0)
             else:
                 self._refresh_screen()
                 return False
 
     def cursor_move(self, key_code):
-        cursor_row, cursor_col = self.terminal.cursor
+        cursor_row, cursor_col = self.terminal.cursor.coord
         if key_code == ANSI.KEY_RIGHT:
             cursor_col +=1
         elif key_code == ANSI.KEY_LEFT:
@@ -120,7 +124,7 @@ class Femto(TextBuffer):
         cursor_row = min(cursor_row, self.terminal.lines - 1)  # Last row is status bar
         cursor_col = max(cursor_col, 1)
         cursor_col = min(cursor_col, self.terminal.cols)
-        self.terminal.cursor = cursor_row, cursor_col
+        self.terminal.cursor.coord = cursor_row, cursor_col
         self._show_coords()
 
     def screen_scroll(self, key_code):
@@ -139,7 +143,7 @@ class Femto(TextBuffer):
         """
         self.terminal = ANSI()
         self.terminal.echo = False
-        self.terminal.scroll_region = (2, 22)
+        self.terminal.scroll_region = (2, 23)
         self._current_line = len(self._buffer) or 1
         self._refresh_screen()
 
@@ -154,6 +158,8 @@ class Femto(TextBuffer):
             key_code = self.terminal.getch()
             if key_code > 0x1F and key_code < 0x7F:
                 stdout.write(chr(key_code))
+            elif key_code == ANSI.KEY_ENTER:
+                self.terminal.next_line()
             elif key_code >= ANSI.KEY_DOWN and key_code <= ANSI.KEY_BACKSPACE:
                 self.cursor_move(key_code)
             elif key_code == ANSI.KEY_PPAGE or key_code == ANSI.KEY_NPAGE:
