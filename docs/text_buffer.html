@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>text_buffer API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>text_buffer</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from sys import stdout
+from re import search
+
+class TextBuffer:
+    &#34;&#34;&#34;
+    Functions for loading, saving and manipulating text editor buffers.
+    Lines start from 1 (not 0) to be consistent with editor numbering.
+    &#34;&#34;&#34;
+    def __init__(self, filename=None):
+        self._buffer = []
+        self._is_dirty = False
+        self.verbose = True
+        self.filename = filename
+        if filename != None:
+            self.load(filename)
+
+    def __str__(self):
+        return &#39;\n&#39;.join(self._buffer)
+
+    def delete_line(self, line_num):
+        &#34;&#34;&#34;
+        Purge the line in the buffer indicated by the line number.
+        &#34;&#34;&#34;
+        buffer_index = line_num - 1
+        if buffer_index &gt; 0 and buffer_index &lt; len(self._buffer):
+            del self._buffer[buffer_index]
+            self._is_dirty = True
+            return True
+        else:
+            return False
+
+    def get_line(self, line_num):
+        &#34;&#34;&#34;
+        Retrieve the line indicated by line number.
+        &#34;&#34;&#34;
+        buffer_index = line_num - 1
+        if buffer_index &gt;= 0 and buffer_index &lt; len(self._buffer):
+            return self._buffer[buffer_index]
+        else:
+            return None
+
+    def find_line(self, expr, start=1):
+        &#34;&#34;&#34;
+        Return the first line number (from start) that contains expr.
+        Return None if not found.
+        &#34;&#34;&#34;
+        found = None
+        line_num = None  # in case start &gt; buffer length
+        for line_num in range(start, len(self._buffer)+1):
+            line = self.get_line(line_num)
+            found = search(expr, line)
+            if found != None:
+                break
+        return line_num if (found !=None) else None
+
+    def insert_line(self, line_num, text):
+        &#34;&#34;&#34;
+        Add a line of text to the buffer at the indicated line number.
+        Existing lines are pushed down to make room.
+        &#34;&#34;&#34;
+        if line_num &lt; 1:
+            return False
+        buffer_index = line_num - 1
+        self._buffer.insert(buffer_index, text.rstrip(&#39;\r\n&#39;))
+        self._is_dirty = True
+
+    def update_line(self, line_num, text):
+        &#34;&#34;&#34;
+        Replace the line indicated by the line number with new text.
+        &#34;&#34;&#34;
+        buffer_index = line_num - 1
+        self._buffer[buffer_index] = text.rstrip(&#39;\r\n&#39;)
+        self._is_dirty = True
+
+    def copy_range(self, start, stop, dest):
+        &#34;&#34;&#34;
+        Copy lines start..stop after line given by dest.
+        &#34;&#34;&#34;
+        self._buffer[dest:dest] = self._buffer[start-1:stop]
+        self._is_dirty = True
+
+    def delete_range(self, start, stop):
+        &#34;&#34;&#34;
+        Remove the lines from start..stop.
+        &#34;&#34;&#34;
+        del self._buffer[start-1:stop]
+        self.is_dirty = True
+
+    def move_range(self, start, stop, dest):
+        &#34;&#34;&#34;
+        Like copy, but remove the source range.
+        &#34;&#34;&#34;
+        self.copy_range(start, stop, dest)
+        offset = stop - start + 1 if (dest &lt; start) else 0
+        self.delete_range(start+offset, stop+offset)
+        self.is_dirty = True
+
+    def _read_file_line(self, file_handle):
+        &#34;&#34;&#34;
+        Read from a file one line at a time, yeilding lines to reduce
+        memory impact. Used by load.
+        &#34;&#34;&#34;
+        while True:
+            line = file_handle.readline()
+            if line:
+                yield line
+            else: # empty line means end of the file
+                return
+
+    def load(self, filename):
+        &#34;&#34;&#34;
+        Read file contents into buffer while stripping end of line characters.
+        &#34;&#34;&#34;
+        try:
+            with open(filename, &#39;r&#39;) as f:
+                for line in self._read_file_line(f):
+                    self._buffer.append(line.rstrip(&#39;\r\n&#39;))
+        except Exception as ex:
+            if self.verbose == True:
+                stdout.write(&#39;{}: {}\n&#39;.format(filename, ex))
+            return False
+        else:
+            self.filename = filename
+            self._is_dirty = False
+            if self.verbose == True:
+                stdout.write(&#39;{:d} lines read from {:s}\n&#39;.format(len(self._buffer), filename))
+            return True
+
+    def save(self, filename=None, eol_marker=&#39;\n&#39;):
+        &#34;&#34;&#34;
+        Write contents of buffer to filename by adding end of line character(s).
+        &#34;&#34;&#34;
+        if filename == None:
+            filename = self.filename
+        try:
+            with open(filename, &#39;w&#39;) as f:
+                for line in self._buffer:
+                    f.write(line + eol_marker)
+        except Exception as ex:
+            if self.verbose == True:
+                stdout.write(&#39;{}: {}\n&#39;.format(filename, ex))
+            return False
+        else:
+            self.filename = filename
+            self._is_dirty = False
+            if self.verbose == True:
+                stdout.write(&#39;{:d} lines written to {:s}\n&#39;.format(len(self._buffer), filename))
+            return True
+
+    def purge(self):
+        &#34;&#34;&#34;
+        Release the buffer list object and start with a fresh one.
+        &#34;&#34;&#34;
+        del self._buffer
+        self._buffer = []
+        self.filename = None
+        self._is_dirty = False</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="text_buffer.TextBuffer"><code class="flex name class">
+<span>class <span class="ident">TextBuffer</span></span>
+<span>(</span><span>filename=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Functions for loading, saving and manipulating text editor buffers.
+Lines start from 1 (not 0) to be consistent with editor numbering.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TextBuffer:
+    &#34;&#34;&#34;
+    Functions for loading, saving and manipulating text editor buffers.
+    Lines start from 1 (not 0) to be consistent with editor numbering.
+    &#34;&#34;&#34;
+    def __init__(self, filename=None):
+        self._buffer = []
+        self._is_dirty = False
+        self.verbose = True
+        self.filename = filename
+        if filename != None:
+            self.load(filename)
+
+    def __str__(self):
+        return &#39;\n&#39;.join(self._buffer)
+
+    def delete_line(self, line_num):
+        &#34;&#34;&#34;
+        Purge the line in the buffer indicated by the line number.
+        &#34;&#34;&#34;
+        buffer_index = line_num - 1
+        if buffer_index &gt; 0 and buffer_index &lt; len(self._buffer):
+            del self._buffer[buffer_index]
+            self._is_dirty = True
+            return True
+        else:
+            return False
+
+    def get_line(self, line_num):
+        &#34;&#34;&#34;
+        Retrieve the line indicated by line number.
+        &#34;&#34;&#34;
+        buffer_index = line_num - 1
+        if buffer_index &gt;= 0 and buffer_index &lt; len(self._buffer):
+            return self._buffer[buffer_index]
+        else:
+            return None
+
+    def find_line(self, expr, start=1):
+        &#34;&#34;&#34;
+        Return the first line number (from start) that contains expr.
+        Return None if not found.
+        &#34;&#34;&#34;
+        found = None
+        line_num = None  # in case start &gt; buffer length
+        for line_num in range(start, len(self._buffer)+1):
+            line = self.get_line(line_num)
+            found = search(expr, line)
+            if found != None:
+                break
+        return line_num if (found !=None) else None
+
+    def insert_line(self, line_num, text):
+        &#34;&#34;&#34;
+        Add a line of text to the buffer at the indicated line number.
+        Existing lines are pushed down to make room.
+        &#34;&#34;&#34;
+        if line_num &lt; 1:
+            return False
+        buffer_index = line_num - 1
+        self._buffer.insert(buffer_index, text.rstrip(&#39;\r\n&#39;))
+        self._is_dirty = True
+
+    def update_line(self, line_num, text):
+        &#34;&#34;&#34;
+        Replace the line indicated by the line number with new text.
+        &#34;&#34;&#34;
+        buffer_index = line_num - 1
+        self._buffer[buffer_index] = text.rstrip(&#39;\r\n&#39;)
+        self._is_dirty = True
+
+    def copy_range(self, start, stop, dest):
+        &#34;&#34;&#34;
+        Copy lines start..stop after line given by dest.
+        &#34;&#34;&#34;
+        self._buffer[dest:dest] = self._buffer[start-1:stop]
+        self._is_dirty = True
+
+    def delete_range(self, start, stop):
+        &#34;&#34;&#34;
+        Remove the lines from start..stop.
+        &#34;&#34;&#34;
+        del self._buffer[start-1:stop]
+        self.is_dirty = True
+
+    def move_range(self, start, stop, dest):
+        &#34;&#34;&#34;
+        Like copy, but remove the source range.
+        &#34;&#34;&#34;
+        self.copy_range(start, stop, dest)
+        offset = stop - start + 1 if (dest &lt; start) else 0
+        self.delete_range(start+offset, stop+offset)
+        self.is_dirty = True
+
+    def _read_file_line(self, file_handle):
+        &#34;&#34;&#34;
+        Read from a file one line at a time, yeilding lines to reduce
+        memory impact. Used by load.
+        &#34;&#34;&#34;
+        while True:
+            line = file_handle.readline()
+            if line:
+                yield line
+            else: # empty line means end of the file
+                return
+
+    def load(self, filename):
+        &#34;&#34;&#34;
+        Read file contents into buffer while stripping end of line characters.
+        &#34;&#34;&#34;
+        try:
+            with open(filename, &#39;r&#39;) as f:
+                for line in self._read_file_line(f):
+                    self._buffer.append(line.rstrip(&#39;\r\n&#39;))
+        except Exception as ex:
+            if self.verbose == True:
+                stdout.write(&#39;{}: {}\n&#39;.format(filename, ex))
+            return False
+        else:
+            self.filename = filename
+            self._is_dirty = False
+            if self.verbose == True:
+                stdout.write(&#39;{:d} lines read from {:s}\n&#39;.format(len(self._buffer), filename))
+            return True
+
+    def save(self, filename=None, eol_marker=&#39;\n&#39;):
+        &#34;&#34;&#34;
+        Write contents of buffer to filename by adding end of line character(s).
+        &#34;&#34;&#34;
+        if filename == None:
+            filename = self.filename
+        try:
+            with open(filename, &#39;w&#39;) as f:
+                for line in self._buffer:
+                    f.write(line + eol_marker)
+        except Exception as ex:
+            if self.verbose == True:
+                stdout.write(&#39;{}: {}\n&#39;.format(filename, ex))
+            return False
+        else:
+            self.filename = filename
+            self._is_dirty = False
+            if self.verbose == True:
+                stdout.write(&#39;{:d} lines written to {:s}\n&#39;.format(len(self._buffer), filename))
+            return True
+
+    def purge(self):
+        &#34;&#34;&#34;
+        Release the buffer list object and start with a fresh one.
+        &#34;&#34;&#34;
+        del self._buffer
+        self._buffer = []
+        self.filename = None
+        self._is_dirty = False</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="text_buffer.TextBuffer.copy_range"><code class="name flex">
+<span>def <span class="ident">copy_range</span></span>(<span>self, start, stop, dest)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Copy lines start..stop after line given by dest.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def copy_range(self, start, stop, dest):
+    &#34;&#34;&#34;
+    Copy lines start..stop after line given by dest.
+    &#34;&#34;&#34;
+    self._buffer[dest:dest] = self._buffer[start-1:stop]
+    self._is_dirty = True</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.delete_line"><code class="name flex">
+<span>def <span class="ident">delete_line</span></span>(<span>self, line_num)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Purge the line in the buffer indicated by the line number.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_line(self, line_num):
+    &#34;&#34;&#34;
+    Purge the line in the buffer indicated by the line number.
+    &#34;&#34;&#34;
+    buffer_index = line_num - 1
+    if buffer_index &gt; 0 and buffer_index &lt; len(self._buffer):
+        del self._buffer[buffer_index]
+        self._is_dirty = True
+        return True
+    else:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.delete_range"><code class="name flex">
+<span>def <span class="ident">delete_range</span></span>(<span>self, start, stop)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove the lines from start..stop.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_range(self, start, stop):
+    &#34;&#34;&#34;
+    Remove the lines from start..stop.
+    &#34;&#34;&#34;
+    del self._buffer[start-1:stop]
+    self.is_dirty = True</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.find_line"><code class="name flex">
+<span>def <span class="ident">find_line</span></span>(<span>self, expr, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the first line number (from start) that contains expr.
+Return None if not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_line(self, expr, start=1):
+    &#34;&#34;&#34;
+    Return the first line number (from start) that contains expr.
+    Return None if not found.
+    &#34;&#34;&#34;
+    found = None
+    line_num = None  # in case start &gt; buffer length
+    for line_num in range(start, len(self._buffer)+1):
+        line = self.get_line(line_num)
+        found = search(expr, line)
+        if found != None:
+            break
+    return line_num if (found !=None) else None</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.get_line"><code class="name flex">
+<span>def <span class="ident">get_line</span></span>(<span>self, line_num)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve the line indicated by line number.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_line(self, line_num):
+    &#34;&#34;&#34;
+    Retrieve the line indicated by line number.
+    &#34;&#34;&#34;
+    buffer_index = line_num - 1
+    if buffer_index &gt;= 0 and buffer_index &lt; len(self._buffer):
+        return self._buffer[buffer_index]
+    else:
+        return None</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.insert_line"><code class="name flex">
+<span>def <span class="ident">insert_line</span></span>(<span>self, line_num, text)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a line of text to the buffer at the indicated line number.
+Existing lines are pushed down to make room.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insert_line(self, line_num, text):
+    &#34;&#34;&#34;
+    Add a line of text to the buffer at the indicated line number.
+    Existing lines are pushed down to make room.
+    &#34;&#34;&#34;
+    if line_num &lt; 1:
+        return False
+    buffer_index = line_num - 1
+    self._buffer.insert(buffer_index, text.rstrip(&#39;\r\n&#39;))
+    self._is_dirty = True</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.load"><code class="name flex">
+<span>def <span class="ident">load</span></span>(<span>self, filename)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read file contents into buffer while stripping end of line characters.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load(self, filename):
+    &#34;&#34;&#34;
+    Read file contents into buffer while stripping end of line characters.
+    &#34;&#34;&#34;
+    try:
+        with open(filename, &#39;r&#39;) as f:
+            for line in self._read_file_line(f):
+                self._buffer.append(line.rstrip(&#39;\r\n&#39;))
+    except Exception as ex:
+        if self.verbose == True:
+            stdout.write(&#39;{}: {}\n&#39;.format(filename, ex))
+        return False
+    else:
+        self.filename = filename
+        self._is_dirty = False
+        if self.verbose == True:
+            stdout.write(&#39;{:d} lines read from {:s}\n&#39;.format(len(self._buffer), filename))
+        return True</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.move_range"><code class="name flex">
+<span>def <span class="ident">move_range</span></span>(<span>self, start, stop, dest)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Like copy, but remove the source range.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move_range(self, start, stop, dest):
+    &#34;&#34;&#34;
+    Like copy, but remove the source range.
+    &#34;&#34;&#34;
+    self.copy_range(start, stop, dest)
+    offset = stop - start + 1 if (dest &lt; start) else 0
+    self.delete_range(start+offset, stop+offset)
+    self.is_dirty = True</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.purge"><code class="name flex">
+<span>def <span class="ident">purge</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Release the buffer list object and start with a fresh one.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def purge(self):
+    &#34;&#34;&#34;
+    Release the buffer list object and start with a fresh one.
+    &#34;&#34;&#34;
+    del self._buffer
+    self._buffer = []
+    self.filename = None
+    self._is_dirty = False</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, filename=None, eol_marker='\n')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Write contents of buffer to filename by adding end of line character(s).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self, filename=None, eol_marker=&#39;\n&#39;):
+    &#34;&#34;&#34;
+    Write contents of buffer to filename by adding end of line character(s).
+    &#34;&#34;&#34;
+    if filename == None:
+        filename = self.filename
+    try:
+        with open(filename, &#39;w&#39;) as f:
+            for line in self._buffer:
+                f.write(line + eol_marker)
+    except Exception as ex:
+        if self.verbose == True:
+            stdout.write(&#39;{}: {}\n&#39;.format(filename, ex))
+        return False
+    else:
+        self.filename = filename
+        self._is_dirty = False
+        if self.verbose == True:
+            stdout.write(&#39;{:d} lines written to {:s}\n&#39;.format(len(self._buffer), filename))
+        return True</code></pre>
+</details>
+</dd>
+<dt id="text_buffer.TextBuffer.update_line"><code class="name flex">
+<span>def <span class="ident">update_line</span></span>(<span>self, line_num, text)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Replace the line indicated by the line number with new text.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_line(self, line_num, text):
+    &#34;&#34;&#34;
+    Replace the line indicated by the line number with new text.
+    &#34;&#34;&#34;
+    buffer_index = line_num - 1
+    self._buffer[buffer_index] = text.rstrip(&#39;\r\n&#39;)
+    self._is_dirty = True</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="text_buffer.TextBuffer" href="#text_buffer.TextBuffer">TextBuffer</a></code></h4>
+<ul class="two-column">
+<li><code><a title="text_buffer.TextBuffer.copy_range" href="#text_buffer.TextBuffer.copy_range">copy_range</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.delete_line" href="#text_buffer.TextBuffer.delete_line">delete_line</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.delete_range" href="#text_buffer.TextBuffer.delete_range">delete_range</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.find_line" href="#text_buffer.TextBuffer.find_line">find_line</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.get_line" href="#text_buffer.TextBuffer.get_line">get_line</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.insert_line" href="#text_buffer.TextBuffer.insert_line">insert_line</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.load" href="#text_buffer.TextBuffer.load">load</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.move_range" href="#text_buffer.TextBuffer.move_range">move_range</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.purge" href="#text_buffer.TextBuffer.purge">purge</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.save" href="#text_buffer.TextBuffer.save">save</a></code></li>
+<li><code><a title="text_buffer.TextBuffer.update_line" href="#text_buffer.TextBuffer.update_line">update_line</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

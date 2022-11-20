@@ -1,0 +1,1391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ansi API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ansi</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from sys import stdin, stdout
+from re import match
+from select import poll, POLLIN
+
+&#34;&#34;&#34;
+Basic cursor and color control for ANSI terminals.
+
+References:
+    https://en.wikipedia.org/wiki/ANSI_escape_code
+    https://ispltd.org/mini_howto/ansi_terminal_codes
+    https://www2.ccs.neu.edu/research/gpc/VonaUtils/vona/terminal/vtansi.htm
+&#34;&#34;&#34;
+
+class Cursor:
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        line, col = self.get_coord()
+        return &#39;Ln: {:d}, Col: {:d}&#39;.format(line, col)
+
+    def get_coord(self):
+        &#34;&#34;&#34;
+        Return cursor (line, col) coordinates as a tuple.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;6n&#39;)
+        reply = &#39;&#39;  # Expecting reply with no newline in the form: &#39;ESC[{line};{col}R&#39;
+        while True:
+            ch = stdin.read(1)
+            reply += ch
+            if (ch == &#39;R&#39;):
+                break
+
+        reply = reply.lstrip(ANSI.CSI)
+        if (match(&#39;[0-9]+;[0-9]+R&#39;, reply)):
+            reply = reply.rstrip(&#39;R&#39;)
+            line, col = reply.split(&#39;;&#39;)
+        else:
+            line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
+
+        return int(line), int(col)
+
+    def set_coord(self, line_col):
+        &#34;&#34;&#34;
+        Move cursor to new line, col coordinates.
+        &#34;&#34;&#34;
+        line, col = line_col
+        stdout.write(ANSI.CSI + &#39;{:d};{:d}H&#39;.format(line, col))
+
+    coord = property(get_coord, set_coord)
+
+    def show(self):
+        &#34;&#34;&#34;
+        Make the cursor visible on the terminal screen.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;?25h&#39;)
+
+    def hide(self):
+        &#34;&#34;&#34;
+        Remove the cursor from the screen.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;?25l&#39;)
+
+    def save(self):
+        &#34;&#34;&#34;
+        Ask terminal to save the cursor position, text attributes, and colors.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.ESC + &#39;7&#39;)
+
+    def restore(self):
+        &#34;&#34;&#34;
+        Restore the previously saved position, attributes, and colors.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.ESC + &#39;8&#39;)
+
+
+class ANSI:
+    # Escape sequences
+    ESC = &#39;\x1B&#39;
+    CSI = ESC + &#39;[&#39;     # Control Sequence Introducer
+
+    # Text attibutes
+    NORMAL = 0  # cancel all attributes and colors
+    BOLD = 1
+    DIM = 2
+    UNDERLINE = 4
+    INVERSE = 7
+    NOT_BOLD = 22
+    NOT_DIM = 22
+    NOT_UNDERLINE = 24
+    NOT_INVERSE = 27
+
+    # Basic 3-bit colors
+    BLACK = 0
+    RED = 1
+    GREEN = 2
+    YELLOW = 3
+    BLUE = 4
+    MAGENTA = 5
+    CYAN = 6
+    WHITE = 7
+
+    # Non-alpha-numeric keys
+    KEY_ENTER = 0x0A
+    KEY_ESC = 0x1B
+    KEY_DOWN = 0x102
+    KEY_UP = 0x103
+    KEY_LEFT = 0x104
+    KEY_RIGHT = 0x105
+    KEY_HOME = 0x106
+    KEY_BACKSPACE = 0x107
+    KEY_F0 = 0x108
+    KEY_F1 = 0x109
+    KEY_F2 = 0x10A
+    KEY_F3 = 0x10B
+    KEY_F4 = 0x10C
+    KEY_DC = 0x14A  # Delete
+    KEY_IC = 0x14B  # Insert
+    KEY_NPAGE = 0x152  # Next page (PgDn)
+    KEY_PPAGE = 0x153  # Prev page (PgUp)
+    KEY_END = 0x168
+
+    keypad_sequence = {
+        &#39;A&#39;: KEY_UP,
+        &#39;B&#39;: KEY_DOWN,
+        &#39;C&#39;: KEY_RIGHT,
+        &#39;D&#39;: KEY_LEFT,
+        &#39;F&#39;: KEY_END,
+        &#39;H&#39;: KEY_HOME,
+        &#39;1~&#39;: KEY_HOME,
+        &#39;2~&#39;: KEY_IC,
+        &#39;3~&#39;: KEY_DC,
+        &#39;4~&#39;: KEY_END,
+        &#39;5~&#39;: KEY_PPAGE,
+        &#39;6~&#39;: KEY_NPAGE,
+        &#39;11~&#39;: KEY_F1,
+        &#39;12~&#39;: KEY_F2,
+        &#39;13~&#39;: KEY_F3,
+        &#39;14~&#39;: KEY_F4,
+    }
+
+    def __init__(self):
+        self.cursor = Cursor()
+        self.echo = True
+        self.use_keypad = True
+        self.reset()
+
+    ### Entire Screen ###
+
+    def reset(self):
+        &#34;&#34;&#34;
+        Reset terminal and probe for terminal dimensions. Clears screen.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.ESC + &#39;c&#39;)
+        self.cursor.coord = (999,999)  # It will stop at (last line, last col).
+        self.lines, self.cols = self.cursor.coord
+        self.cursor.coord = (1,1)
+
+    def clear(self,  before_cursor=True, after_cursor=True, clear_scrollback=False):
+        &#34;&#34;&#34;
+        Erase the screen, either the entire screen (default) or just the
+        lines before/after the cursor line.
+        &#34;&#34;&#34;
+        if (clear_scrollback == True):
+            stdout.write(ANSI.CSI + &#39;3J&#39;)
+
+        if after_cursor and not before_cursor:
+            control_sequence = &#39;J&#39;
+        elif before_cursor and not after_cursor:
+            control_sequence = &#39;1J&#39;
+        elif after_cursor and before_cursor:
+            control_sequence = &#39;2J&#39;
+
+        stdout.write(ANSI.CSI + control_sequence)
+
+    ### Scroll Region ###
+
+    def set_scroll_region(self, row_range):
+        &#34;&#34;&#34;
+        Limit range of rows (inclusive) affected when scrolling up/down.
+        &#34;&#34;&#34;
+        if len(row_range) != 2:
+            return False
+        top, bottom = row_range
+        stdout.write(ANSI.CSI + &#39;{:d};{:d}r&#39;.format(top, bottom))
+
+    def clear_scroll_region(self):
+        stdout.write(ANSI.CSI + &#39;r&#39;)
+
+    scroll_region = property(None, set_scroll_region, clear_scroll_region)
+
+    def scroll_up(self):
+        stdout.write(ANSI.CSI + &#39;S&#39;)
+
+    def scroll_down(self):
+        stdout.write(ANSI.CSI + &#39;T&#39;)
+
+    ### Individual Lines ###
+
+    def clear_line(self, before_cursor=True, after_cursor=True):
+        &#34;&#34;&#34;
+        Erase the line where the cursor is currently located, either the
+        entire line (default) or before/after the cursor column.
+        &#34;&#34;&#34;
+        if after_cursor and not before_cursor:
+            control_sequence = &#39;K&#39;
+        elif before_cursor and not after_cursor:
+            control_sequence = &#39;1K&#39;
+        elif after_cursor and before_cursor:
+            control_sequence = &#39;2K&#39;
+
+        stdout.write(ANSI.CSI + control_sequence)
+
+    def next_line(self):
+        &#34;&#34;&#34;
+        Go to the next line and position the cursor at the beginning.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;E&#39;)
+
+    ### Individual Characters ###
+
+    def set_attributes(self, attributes_triplet=(NORMAL, WHITE, BLACK)):
+        &#34;&#34;&#34;
+        Define text style (bold, inverse, etc.) and colors. Refer to
+        predefined attribute and color constants for possible values.
+        &#34;&#34;&#34;
+        if len(attributes_triplet != 3):
+            return False
+        style, fg_color, bg_color = attributes_triplet
+        control_sequence = &#39;{:d};&#39;.format(style) if style else &#39;&#39;
+        control_sequence += &#39;{:d};&#39;.format(fg_color+30) if fg_color else &#39;&#39;
+        control_sequence += &#39;{:d};&#39;.format(bg_color+40) if bg_color else &#39;&#39;
+        control_sequence = control_sequence.rstrip(&#39;;&#39;)
+        control_sequence += &#39;m&#39;
+        stdout.write(ANSI.CSI + control_sequence)
+
+    def clear_attributes(self):
+        &#34;&#34;&#34;
+        Reset text attributes and colors back to default.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;m&#39;)
+
+    attributes = property(None, set_attributes, clear_attributes)
+
+    def set_color(self, color_pair=(WHITE, BLACK)):
+        &#34;&#34;&#34;
+        Set the foreground and background colors. Refer to predefined
+        color constants for possible values.
+        &#34;&#34;&#34;
+        if len(color_pair) != 2:
+            return False
+        fg_color, bg_color = color_pair
+        stdout.write(ANSI.CSI + &#39;{:d};{:d}m&#39;.format(fg_color+30, bg_color+40))
+
+    def clear_color(self):
+        &#34;&#34;&#34;
+        Reset colors to default without affecting attributes (bold, etc.)
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;39;49m&#39;)  # 39;49 represent default.
+
+    color = property(None, set_color, clear_color)
+
+    def set_style(self, style_attr):
+        stdout.write(ANSI.CSI + &#39;{:d}m&#39;.format(style_attr))
+
+    def clear_style(self):
+        stdout.write(ANSI.CSI + ANSI.NORMAL + &#39;m&#39;)
+
+    style = property(None, set_style, clear_style)
+
+    ### Keyboard Input ###
+
+    def getch(self):
+        &#34;&#34;&#34;
+        Wait for a keypress and return its value as an integer. Optionally
+        process keypad and function keys.
+        &#34;&#34;&#34;
+        ch = None
+        poll_obj = poll()
+        poll_obj.register(stdin, POLLIN)
+        while (True):
+            keypress = stdin.read(1) if poll_obj.poll(0) else None
+            if keypress != None:
+                if self.echo == True:
+                    stdout.write(keypress)
+                ch = ord(keypress)
+                if ch != ANSI.KEY_ESC or self.use_keypad == False:  # Not an ESC sequence
+                    break
+                elif stdin.read(1) == &#39;[&#39;:  # ESC[ is Control Sequence Introducer
+                    sequence = &#39;&#39;
+                    while True:
+                        s = stdin.read(1)
+                        sequence += s
+                        if ord(s) &gt; 0x3F and ord(s) &lt; 0x7F:
+                            break
+                    ch = ANSI.keypad_sequence.get(sequence)
+                    break
+        return ch
+
+    ch = property(getch)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="ansi.ANSI"><code class="flex name class">
+<span>class <span class="ident">ANSI</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ANSI:
+    # Escape sequences
+    ESC = &#39;\x1B&#39;
+    CSI = ESC + &#39;[&#39;     # Control Sequence Introducer
+
+    # Text attibutes
+    NORMAL = 0  # cancel all attributes and colors
+    BOLD = 1
+    DIM = 2
+    UNDERLINE = 4
+    INVERSE = 7
+    NOT_BOLD = 22
+    NOT_DIM = 22
+    NOT_UNDERLINE = 24
+    NOT_INVERSE = 27
+
+    # Basic 3-bit colors
+    BLACK = 0
+    RED = 1
+    GREEN = 2
+    YELLOW = 3
+    BLUE = 4
+    MAGENTA = 5
+    CYAN = 6
+    WHITE = 7
+
+    # Non-alpha-numeric keys
+    KEY_ENTER = 0x0A
+    KEY_ESC = 0x1B
+    KEY_DOWN = 0x102
+    KEY_UP = 0x103
+    KEY_LEFT = 0x104
+    KEY_RIGHT = 0x105
+    KEY_HOME = 0x106
+    KEY_BACKSPACE = 0x107
+    KEY_F0 = 0x108
+    KEY_F1 = 0x109
+    KEY_F2 = 0x10A
+    KEY_F3 = 0x10B
+    KEY_F4 = 0x10C
+    KEY_DC = 0x14A  # Delete
+    KEY_IC = 0x14B  # Insert
+    KEY_NPAGE = 0x152  # Next page (PgDn)
+    KEY_PPAGE = 0x153  # Prev page (PgUp)
+    KEY_END = 0x168
+
+    keypad_sequence = {
+        &#39;A&#39;: KEY_UP,
+        &#39;B&#39;: KEY_DOWN,
+        &#39;C&#39;: KEY_RIGHT,
+        &#39;D&#39;: KEY_LEFT,
+        &#39;F&#39;: KEY_END,
+        &#39;H&#39;: KEY_HOME,
+        &#39;1~&#39;: KEY_HOME,
+        &#39;2~&#39;: KEY_IC,
+        &#39;3~&#39;: KEY_DC,
+        &#39;4~&#39;: KEY_END,
+        &#39;5~&#39;: KEY_PPAGE,
+        &#39;6~&#39;: KEY_NPAGE,
+        &#39;11~&#39;: KEY_F1,
+        &#39;12~&#39;: KEY_F2,
+        &#39;13~&#39;: KEY_F3,
+        &#39;14~&#39;: KEY_F4,
+    }
+
+    def __init__(self):
+        self.cursor = Cursor()
+        self.echo = True
+        self.use_keypad = True
+        self.reset()
+
+    ### Entire Screen ###
+
+    def reset(self):
+        &#34;&#34;&#34;
+        Reset terminal and probe for terminal dimensions. Clears screen.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.ESC + &#39;c&#39;)
+        self.cursor.coord = (999,999)  # It will stop at (last line, last col).
+        self.lines, self.cols = self.cursor.coord
+        self.cursor.coord = (1,1)
+
+    def clear(self,  before_cursor=True, after_cursor=True, clear_scrollback=False):
+        &#34;&#34;&#34;
+        Erase the screen, either the entire screen (default) or just the
+        lines before/after the cursor line.
+        &#34;&#34;&#34;
+        if (clear_scrollback == True):
+            stdout.write(ANSI.CSI + &#39;3J&#39;)
+
+        if after_cursor and not before_cursor:
+            control_sequence = &#39;J&#39;
+        elif before_cursor and not after_cursor:
+            control_sequence = &#39;1J&#39;
+        elif after_cursor and before_cursor:
+            control_sequence = &#39;2J&#39;
+
+        stdout.write(ANSI.CSI + control_sequence)
+
+    ### Scroll Region ###
+
+    def set_scroll_region(self, row_range):
+        &#34;&#34;&#34;
+        Limit range of rows (inclusive) affected when scrolling up/down.
+        &#34;&#34;&#34;
+        if len(row_range) != 2:
+            return False
+        top, bottom = row_range
+        stdout.write(ANSI.CSI + &#39;{:d};{:d}r&#39;.format(top, bottom))
+
+    def clear_scroll_region(self):
+        stdout.write(ANSI.CSI + &#39;r&#39;)
+
+    scroll_region = property(None, set_scroll_region, clear_scroll_region)
+
+    def scroll_up(self):
+        stdout.write(ANSI.CSI + &#39;S&#39;)
+
+    def scroll_down(self):
+        stdout.write(ANSI.CSI + &#39;T&#39;)
+
+    ### Individual Lines ###
+
+    def clear_line(self, before_cursor=True, after_cursor=True):
+        &#34;&#34;&#34;
+        Erase the line where the cursor is currently located, either the
+        entire line (default) or before/after the cursor column.
+        &#34;&#34;&#34;
+        if after_cursor and not before_cursor:
+            control_sequence = &#39;K&#39;
+        elif before_cursor and not after_cursor:
+            control_sequence = &#39;1K&#39;
+        elif after_cursor and before_cursor:
+            control_sequence = &#39;2K&#39;
+
+        stdout.write(ANSI.CSI + control_sequence)
+
+    def next_line(self):
+        &#34;&#34;&#34;
+        Go to the next line and position the cursor at the beginning.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;E&#39;)
+
+    ### Individual Characters ###
+
+    def set_attributes(self, attributes_triplet=(NORMAL, WHITE, BLACK)):
+        &#34;&#34;&#34;
+        Define text style (bold, inverse, etc.) and colors. Refer to
+        predefined attribute and color constants for possible values.
+        &#34;&#34;&#34;
+        if len(attributes_triplet != 3):
+            return False
+        style, fg_color, bg_color = attributes_triplet
+        control_sequence = &#39;{:d};&#39;.format(style) if style else &#39;&#39;
+        control_sequence += &#39;{:d};&#39;.format(fg_color+30) if fg_color else &#39;&#39;
+        control_sequence += &#39;{:d};&#39;.format(bg_color+40) if bg_color else &#39;&#39;
+        control_sequence = control_sequence.rstrip(&#39;;&#39;)
+        control_sequence += &#39;m&#39;
+        stdout.write(ANSI.CSI + control_sequence)
+
+    def clear_attributes(self):
+        &#34;&#34;&#34;
+        Reset text attributes and colors back to default.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;m&#39;)
+
+    attributes = property(None, set_attributes, clear_attributes)
+
+    def set_color(self, color_pair=(WHITE, BLACK)):
+        &#34;&#34;&#34;
+        Set the foreground and background colors. Refer to predefined
+        color constants for possible values.
+        &#34;&#34;&#34;
+        if len(color_pair) != 2:
+            return False
+        fg_color, bg_color = color_pair
+        stdout.write(ANSI.CSI + &#39;{:d};{:d}m&#39;.format(fg_color+30, bg_color+40))
+
+    def clear_color(self):
+        &#34;&#34;&#34;
+        Reset colors to default without affecting attributes (bold, etc.)
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;39;49m&#39;)  # 39;49 represent default.
+
+    color = property(None, set_color, clear_color)
+
+    def set_style(self, style_attr):
+        stdout.write(ANSI.CSI + &#39;{:d}m&#39;.format(style_attr))
+
+    def clear_style(self):
+        stdout.write(ANSI.CSI + ANSI.NORMAL + &#39;m&#39;)
+
+    style = property(None, set_style, clear_style)
+
+    ### Keyboard Input ###
+
+    def getch(self):
+        &#34;&#34;&#34;
+        Wait for a keypress and return its value as an integer. Optionally
+        process keypad and function keys.
+        &#34;&#34;&#34;
+        ch = None
+        poll_obj = poll()
+        poll_obj.register(stdin, POLLIN)
+        while (True):
+            keypress = stdin.read(1) if poll_obj.poll(0) else None
+            if keypress != None:
+                if self.echo == True:
+                    stdout.write(keypress)
+                ch = ord(keypress)
+                if ch != ANSI.KEY_ESC or self.use_keypad == False:  # Not an ESC sequence
+                    break
+                elif stdin.read(1) == &#39;[&#39;:  # ESC[ is Control Sequence Introducer
+                    sequence = &#39;&#39;
+                    while True:
+                        s = stdin.read(1)
+                        sequence += s
+                        if ord(s) &gt; 0x3F and ord(s) &lt; 0x7F:
+                            break
+                    ch = ANSI.keypad_sequence.get(sequence)
+                    break
+        return ch
+
+    ch = property(getch)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="ansi.ANSI.BLACK"><code class="name">var <span class="ident">BLACK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.BLUE"><code class="name">var <span class="ident">BLUE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.BOLD"><code class="name">var <span class="ident">BOLD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.CSI"><code class="name">var <span class="ident">CSI</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.CYAN"><code class="name">var <span class="ident">CYAN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.DIM"><code class="name">var <span class="ident">DIM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.ESC"><code class="name">var <span class="ident">ESC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.GREEN"><code class="name">var <span class="ident">GREEN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.INVERSE"><code class="name">var <span class="ident">INVERSE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_BACKSPACE"><code class="name">var <span class="ident">KEY_BACKSPACE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_DC"><code class="name">var <span class="ident">KEY_DC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_DOWN"><code class="name">var <span class="ident">KEY_DOWN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_END"><code class="name">var <span class="ident">KEY_END</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_ENTER"><code class="name">var <span class="ident">KEY_ENTER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_ESC"><code class="name">var <span class="ident">KEY_ESC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_F0"><code class="name">var <span class="ident">KEY_F0</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_F1"><code class="name">var <span class="ident">KEY_F1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_F2"><code class="name">var <span class="ident">KEY_F2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_F3"><code class="name">var <span class="ident">KEY_F3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_F4"><code class="name">var <span class="ident">KEY_F4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_HOME"><code class="name">var <span class="ident">KEY_HOME</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_IC"><code class="name">var <span class="ident">KEY_IC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_LEFT"><code class="name">var <span class="ident">KEY_LEFT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_NPAGE"><code class="name">var <span class="ident">KEY_NPAGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_PPAGE"><code class="name">var <span class="ident">KEY_PPAGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_RIGHT"><code class="name">var <span class="ident">KEY_RIGHT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.KEY_UP"><code class="name">var <span class="ident">KEY_UP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.MAGENTA"><code class="name">var <span class="ident">MAGENTA</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.NORMAL"><code class="name">var <span class="ident">NORMAL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.NOT_BOLD"><code class="name">var <span class="ident">NOT_BOLD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.NOT_DIM"><code class="name">var <span class="ident">NOT_DIM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.NOT_INVERSE"><code class="name">var <span class="ident">NOT_INVERSE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.NOT_UNDERLINE"><code class="name">var <span class="ident">NOT_UNDERLINE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.RED"><code class="name">var <span class="ident">RED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.UNDERLINE"><code class="name">var <span class="ident">UNDERLINE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.WHITE"><code class="name">var <span class="ident">WHITE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.YELLOW"><code class="name">var <span class="ident">YELLOW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.keypad_sequence"><code class="name">var <span class="ident">keypad_sequence</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="ansi.ANSI.attributes"><code class="name">var <span class="ident">attributes</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.ch"><code class="name">var <span class="ident">ch</span></code></dt>
+<dd>
+<div class="desc"><p>Wait for a keypress and return its value as an integer. Optionally
+process keypad and function keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getch(self):
+    &#34;&#34;&#34;
+    Wait for a keypress and return its value as an integer. Optionally
+    process keypad and function keys.
+    &#34;&#34;&#34;
+    ch = None
+    poll_obj = poll()
+    poll_obj.register(stdin, POLLIN)
+    while (True):
+        keypress = stdin.read(1) if poll_obj.poll(0) else None
+        if keypress != None:
+            if self.echo == True:
+                stdout.write(keypress)
+            ch = ord(keypress)
+            if ch != ANSI.KEY_ESC or self.use_keypad == False:  # Not an ESC sequence
+                break
+            elif stdin.read(1) == &#39;[&#39;:  # ESC[ is Control Sequence Introducer
+                sequence = &#39;&#39;
+                while True:
+                    s = stdin.read(1)
+                    sequence += s
+                    if ord(s) &gt; 0x3F and ord(s) &lt; 0x7F:
+                        break
+                ch = ANSI.keypad_sequence.get(sequence)
+                break
+    return ch</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.color"><code class="name">var <span class="ident">color</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.scroll_region"><code class="name">var <span class="ident">scroll_region</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ansi.ANSI.style"><code class="name">var <span class="ident">style</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="ansi.ANSI.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self, before_cursor=True, after_cursor=True, clear_scrollback=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Erase the screen, either the entire screen (default) or just the
+lines before/after the cursor line.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self,  before_cursor=True, after_cursor=True, clear_scrollback=False):
+    &#34;&#34;&#34;
+    Erase the screen, either the entire screen (default) or just the
+    lines before/after the cursor line.
+    &#34;&#34;&#34;
+    if (clear_scrollback == True):
+        stdout.write(ANSI.CSI + &#39;3J&#39;)
+
+    if after_cursor and not before_cursor:
+        control_sequence = &#39;J&#39;
+    elif before_cursor and not after_cursor:
+        control_sequence = &#39;1J&#39;
+    elif after_cursor and before_cursor:
+        control_sequence = &#39;2J&#39;
+
+    stdout.write(ANSI.CSI + control_sequence)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.clear_attributes"><code class="name flex">
+<span>def <span class="ident">clear_attributes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reset text attributes and colors back to default.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_attributes(self):
+    &#34;&#34;&#34;
+    Reset text attributes and colors back to default.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;m&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.clear_color"><code class="name flex">
+<span>def <span class="ident">clear_color</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reset colors to default without affecting attributes (bold, etc.)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_color(self):
+    &#34;&#34;&#34;
+    Reset colors to default without affecting attributes (bold, etc.)
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;39;49m&#39;)  # 39;49 represent default.</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.clear_line"><code class="name flex">
+<span>def <span class="ident">clear_line</span></span>(<span>self, before_cursor=True, after_cursor=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Erase the line where the cursor is currently located, either the
+entire line (default) or before/after the cursor column.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_line(self, before_cursor=True, after_cursor=True):
+    &#34;&#34;&#34;
+    Erase the line where the cursor is currently located, either the
+    entire line (default) or before/after the cursor column.
+    &#34;&#34;&#34;
+    if after_cursor and not before_cursor:
+        control_sequence = &#39;K&#39;
+    elif before_cursor and not after_cursor:
+        control_sequence = &#39;1K&#39;
+    elif after_cursor and before_cursor:
+        control_sequence = &#39;2K&#39;
+
+    stdout.write(ANSI.CSI + control_sequence)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.clear_scroll_region"><code class="name flex">
+<span>def <span class="ident">clear_scroll_region</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_scroll_region(self):
+    stdout.write(ANSI.CSI + &#39;r&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.clear_style"><code class="name flex">
+<span>def <span class="ident">clear_style</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_style(self):
+    stdout.write(ANSI.CSI + ANSI.NORMAL + &#39;m&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.getch"><code class="name flex">
+<span>def <span class="ident">getch</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wait for a keypress and return its value as an integer. Optionally
+process keypad and function keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getch(self):
+    &#34;&#34;&#34;
+    Wait for a keypress and return its value as an integer. Optionally
+    process keypad and function keys.
+    &#34;&#34;&#34;
+    ch = None
+    poll_obj = poll()
+    poll_obj.register(stdin, POLLIN)
+    while (True):
+        keypress = stdin.read(1) if poll_obj.poll(0) else None
+        if keypress != None:
+            if self.echo == True:
+                stdout.write(keypress)
+            ch = ord(keypress)
+            if ch != ANSI.KEY_ESC or self.use_keypad == False:  # Not an ESC sequence
+                break
+            elif stdin.read(1) == &#39;[&#39;:  # ESC[ is Control Sequence Introducer
+                sequence = &#39;&#39;
+                while True:
+                    s = stdin.read(1)
+                    sequence += s
+                    if ord(s) &gt; 0x3F and ord(s) &lt; 0x7F:
+                        break
+                ch = ANSI.keypad_sequence.get(sequence)
+                break
+    return ch</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.next_line"><code class="name flex">
+<span>def <span class="ident">next_line</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Go to the next line and position the cursor at the beginning.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def next_line(self):
+    &#34;&#34;&#34;
+    Go to the next line and position the cursor at the beginning.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;E&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.reset"><code class="name flex">
+<span>def <span class="ident">reset</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reset terminal and probe for terminal dimensions. Clears screen.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset(self):
+    &#34;&#34;&#34;
+    Reset terminal and probe for terminal dimensions. Clears screen.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.ESC + &#39;c&#39;)
+    self.cursor.coord = (999,999)  # It will stop at (last line, last col).
+    self.lines, self.cols = self.cursor.coord
+    self.cursor.coord = (1,1)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.scroll_down"><code class="name flex">
+<span>def <span class="ident">scroll_down</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scroll_down(self):
+    stdout.write(ANSI.CSI + &#39;T&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.scroll_up"><code class="name flex">
+<span>def <span class="ident">scroll_up</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scroll_up(self):
+    stdout.write(ANSI.CSI + &#39;S&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.set_attributes"><code class="name flex">
+<span>def <span class="ident">set_attributes</span></span>(<span>self, attributes_triplet=(0, 7, 0))</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Define text style (bold, inverse, etc.) and colors. Refer to
+predefined attribute and color constants for possible values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_attributes(self, attributes_triplet=(NORMAL, WHITE, BLACK)):
+    &#34;&#34;&#34;
+    Define text style (bold, inverse, etc.) and colors. Refer to
+    predefined attribute and color constants for possible values.
+    &#34;&#34;&#34;
+    if len(attributes_triplet != 3):
+        return False
+    style, fg_color, bg_color = attributes_triplet
+    control_sequence = &#39;{:d};&#39;.format(style) if style else &#39;&#39;
+    control_sequence += &#39;{:d};&#39;.format(fg_color+30) if fg_color else &#39;&#39;
+    control_sequence += &#39;{:d};&#39;.format(bg_color+40) if bg_color else &#39;&#39;
+    control_sequence = control_sequence.rstrip(&#39;;&#39;)
+    control_sequence += &#39;m&#39;
+    stdout.write(ANSI.CSI + control_sequence)</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.set_color"><code class="name flex">
+<span>def <span class="ident">set_color</span></span>(<span>self, color_pair=(7, 0))</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the foreground and background colors. Refer to predefined
+color constants for possible values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_color(self, color_pair=(WHITE, BLACK)):
+    &#34;&#34;&#34;
+    Set the foreground and background colors. Refer to predefined
+    color constants for possible values.
+    &#34;&#34;&#34;
+    if len(color_pair) != 2:
+        return False
+    fg_color, bg_color = color_pair
+    stdout.write(ANSI.CSI + &#39;{:d};{:d}m&#39;.format(fg_color+30, bg_color+40))</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.set_scroll_region"><code class="name flex">
+<span>def <span class="ident">set_scroll_region</span></span>(<span>self, row_range)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Limit range of rows (inclusive) affected when scrolling up/down.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_scroll_region(self, row_range):
+    &#34;&#34;&#34;
+    Limit range of rows (inclusive) affected when scrolling up/down.
+    &#34;&#34;&#34;
+    if len(row_range) != 2:
+        return False
+    top, bottom = row_range
+    stdout.write(ANSI.CSI + &#39;{:d};{:d}r&#39;.format(top, bottom))</code></pre>
+</details>
+</dd>
+<dt id="ansi.ANSI.set_style"><code class="name flex">
+<span>def <span class="ident">set_style</span></span>(<span>self, style_attr)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_style(self, style_attr):
+    stdout.write(ANSI.CSI + &#39;{:d}m&#39;.format(style_attr))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="ansi.Cursor"><code class="flex name class">
+<span>class <span class="ident">Cursor</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Cursor:
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        line, col = self.get_coord()
+        return &#39;Ln: {:d}, Col: {:d}&#39;.format(line, col)
+
+    def get_coord(self):
+        &#34;&#34;&#34;
+        Return cursor (line, col) coordinates as a tuple.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;6n&#39;)
+        reply = &#39;&#39;  # Expecting reply with no newline in the form: &#39;ESC[{line};{col}R&#39;
+        while True:
+            ch = stdin.read(1)
+            reply += ch
+            if (ch == &#39;R&#39;):
+                break
+
+        reply = reply.lstrip(ANSI.CSI)
+        if (match(&#39;[0-9]+;[0-9]+R&#39;, reply)):
+            reply = reply.rstrip(&#39;R&#39;)
+            line, col = reply.split(&#39;;&#39;)
+        else:
+            line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
+
+        return int(line), int(col)
+
+    def set_coord(self, line_col):
+        &#34;&#34;&#34;
+        Move cursor to new line, col coordinates.
+        &#34;&#34;&#34;
+        line, col = line_col
+        stdout.write(ANSI.CSI + &#39;{:d};{:d}H&#39;.format(line, col))
+
+    coord = property(get_coord, set_coord)
+
+    def show(self):
+        &#34;&#34;&#34;
+        Make the cursor visible on the terminal screen.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;?25h&#39;)
+
+    def hide(self):
+        &#34;&#34;&#34;
+        Remove the cursor from the screen.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.CSI + &#39;?25l&#39;)
+
+    def save(self):
+        &#34;&#34;&#34;
+        Ask terminal to save the cursor position, text attributes, and colors.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.ESC + &#39;7&#39;)
+
+    def restore(self):
+        &#34;&#34;&#34;
+        Restore the previously saved position, attributes, and colors.
+        &#34;&#34;&#34;
+        stdout.write(ANSI.ESC + &#39;8&#39;)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="ansi.Cursor.coord"><code class="name">var <span class="ident">coord</span></code></dt>
+<dd>
+<div class="desc"><p>Return cursor (line, col) coordinates as a tuple.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_coord(self):
+    &#34;&#34;&#34;
+    Return cursor (line, col) coordinates as a tuple.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;6n&#39;)
+    reply = &#39;&#39;  # Expecting reply with no newline in the form: &#39;ESC[{line};{col}R&#39;
+    while True:
+        ch = stdin.read(1)
+        reply += ch
+        if (ch == &#39;R&#39;):
+            break
+
+    reply = reply.lstrip(ANSI.CSI)
+    if (match(&#39;[0-9]+;[0-9]+R&#39;, reply)):
+        reply = reply.rstrip(&#39;R&#39;)
+        line, col = reply.split(&#39;;&#39;)
+    else:
+        line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
+
+    return int(line), int(col)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="ansi.Cursor.get_coord"><code class="name flex">
+<span>def <span class="ident">get_coord</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return cursor (line, col) coordinates as a tuple.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_coord(self):
+    &#34;&#34;&#34;
+    Return cursor (line, col) coordinates as a tuple.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;6n&#39;)
+    reply = &#39;&#39;  # Expecting reply with no newline in the form: &#39;ESC[{line};{col}R&#39;
+    while True:
+        ch = stdin.read(1)
+        reply += ch
+        if (ch == &#39;R&#39;):
+            break
+
+    reply = reply.lstrip(ANSI.CSI)
+    if (match(&#39;[0-9]+;[0-9]+R&#39;, reply)):
+        reply = reply.rstrip(&#39;R&#39;)
+        line, col = reply.split(&#39;;&#39;)
+    else:
+        line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
+
+    return int(line), int(col)</code></pre>
+</details>
+</dd>
+<dt id="ansi.Cursor.hide"><code class="name flex">
+<span>def <span class="ident">hide</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove the cursor from the screen.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hide(self):
+    &#34;&#34;&#34;
+    Remove the cursor from the screen.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;?25l&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.Cursor.restore"><code class="name flex">
+<span>def <span class="ident">restore</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Restore the previously saved position, attributes, and colors.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def restore(self):
+    &#34;&#34;&#34;
+    Restore the previously saved position, attributes, and colors.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.ESC + &#39;8&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.Cursor.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Ask terminal to save the cursor position, text attributes, and colors.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self):
+    &#34;&#34;&#34;
+    Ask terminal to save the cursor position, text attributes, and colors.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.ESC + &#39;7&#39;)</code></pre>
+</details>
+</dd>
+<dt id="ansi.Cursor.set_coord"><code class="name flex">
+<span>def <span class="ident">set_coord</span></span>(<span>self, line_col)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Move cursor to new line, col coordinates.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_coord(self, line_col):
+    &#34;&#34;&#34;
+    Move cursor to new line, col coordinates.
+    &#34;&#34;&#34;
+    line, col = line_col
+    stdout.write(ANSI.CSI + &#39;{:d};{:d}H&#39;.format(line, col))</code></pre>
+</details>
+</dd>
+<dt id="ansi.Cursor.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Make the cursor visible on the terminal screen.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show(self):
+    &#34;&#34;&#34;
+    Make the cursor visible on the terminal screen.
+    &#34;&#34;&#34;
+    stdout.write(ANSI.CSI + &#39;?25h&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ansi.ANSI" href="#ansi.ANSI">ANSI</a></code></h4>
+<ul class="two-column">
+<li><code><a title="ansi.ANSI.BLACK" href="#ansi.ANSI.BLACK">BLACK</a></code></li>
+<li><code><a title="ansi.ANSI.BLUE" href="#ansi.ANSI.BLUE">BLUE</a></code></li>
+<li><code><a title="ansi.ANSI.BOLD" href="#ansi.ANSI.BOLD">BOLD</a></code></li>
+<li><code><a title="ansi.ANSI.CSI" href="#ansi.ANSI.CSI">CSI</a></code></li>
+<li><code><a title="ansi.ANSI.CYAN" href="#ansi.ANSI.CYAN">CYAN</a></code></li>
+<li><code><a title="ansi.ANSI.DIM" href="#ansi.ANSI.DIM">DIM</a></code></li>
+<li><code><a title="ansi.ANSI.ESC" href="#ansi.ANSI.ESC">ESC</a></code></li>
+<li><code><a title="ansi.ANSI.GREEN" href="#ansi.ANSI.GREEN">GREEN</a></code></li>
+<li><code><a title="ansi.ANSI.INVERSE" href="#ansi.ANSI.INVERSE">INVERSE</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_BACKSPACE" href="#ansi.ANSI.KEY_BACKSPACE">KEY_BACKSPACE</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_DC" href="#ansi.ANSI.KEY_DC">KEY_DC</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_DOWN" href="#ansi.ANSI.KEY_DOWN">KEY_DOWN</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_END" href="#ansi.ANSI.KEY_END">KEY_END</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_ENTER" href="#ansi.ANSI.KEY_ENTER">KEY_ENTER</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_ESC" href="#ansi.ANSI.KEY_ESC">KEY_ESC</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_F0" href="#ansi.ANSI.KEY_F0">KEY_F0</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_F1" href="#ansi.ANSI.KEY_F1">KEY_F1</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_F2" href="#ansi.ANSI.KEY_F2">KEY_F2</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_F3" href="#ansi.ANSI.KEY_F3">KEY_F3</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_F4" href="#ansi.ANSI.KEY_F4">KEY_F4</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_HOME" href="#ansi.ANSI.KEY_HOME">KEY_HOME</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_IC" href="#ansi.ANSI.KEY_IC">KEY_IC</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_LEFT" href="#ansi.ANSI.KEY_LEFT">KEY_LEFT</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_NPAGE" href="#ansi.ANSI.KEY_NPAGE">KEY_NPAGE</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_PPAGE" href="#ansi.ANSI.KEY_PPAGE">KEY_PPAGE</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_RIGHT" href="#ansi.ANSI.KEY_RIGHT">KEY_RIGHT</a></code></li>
+<li><code><a title="ansi.ANSI.KEY_UP" href="#ansi.ANSI.KEY_UP">KEY_UP</a></code></li>
+<li><code><a title="ansi.ANSI.MAGENTA" href="#ansi.ANSI.MAGENTA">MAGENTA</a></code></li>
+<li><code><a title="ansi.ANSI.NORMAL" href="#ansi.ANSI.NORMAL">NORMAL</a></code></li>
+<li><code><a title="ansi.ANSI.NOT_BOLD" href="#ansi.ANSI.NOT_BOLD">NOT_BOLD</a></code></li>
+<li><code><a title="ansi.ANSI.NOT_DIM" href="#ansi.ANSI.NOT_DIM">NOT_DIM</a></code></li>
+<li><code><a title="ansi.ANSI.NOT_INVERSE" href="#ansi.ANSI.NOT_INVERSE">NOT_INVERSE</a></code></li>
+<li><code><a title="ansi.ANSI.NOT_UNDERLINE" href="#ansi.ANSI.NOT_UNDERLINE">NOT_UNDERLINE</a></code></li>
+<li><code><a title="ansi.ANSI.RED" href="#ansi.ANSI.RED">RED</a></code></li>
+<li><code><a title="ansi.ANSI.UNDERLINE" href="#ansi.ANSI.UNDERLINE">UNDERLINE</a></code></li>
+<li><code><a title="ansi.ANSI.WHITE" href="#ansi.ANSI.WHITE">WHITE</a></code></li>
+<li><code><a title="ansi.ANSI.YELLOW" href="#ansi.ANSI.YELLOW">YELLOW</a></code></li>
+<li><code><a title="ansi.ANSI.attributes" href="#ansi.ANSI.attributes">attributes</a></code></li>
+<li><code><a title="ansi.ANSI.ch" href="#ansi.ANSI.ch">ch</a></code></li>
+<li><code><a title="ansi.ANSI.clear" href="#ansi.ANSI.clear">clear</a></code></li>
+<li><code><a title="ansi.ANSI.clear_attributes" href="#ansi.ANSI.clear_attributes">clear_attributes</a></code></li>
+<li><code><a title="ansi.ANSI.clear_color" href="#ansi.ANSI.clear_color">clear_color</a></code></li>
+<li><code><a title="ansi.ANSI.clear_line" href="#ansi.ANSI.clear_line">clear_line</a></code></li>
+<li><code><a title="ansi.ANSI.clear_scroll_region" href="#ansi.ANSI.clear_scroll_region">clear_scroll_region</a></code></li>
+<li><code><a title="ansi.ANSI.clear_style" href="#ansi.ANSI.clear_style">clear_style</a></code></li>
+<li><code><a title="ansi.ANSI.color" href="#ansi.ANSI.color">color</a></code></li>
+<li><code><a title="ansi.ANSI.getch" href="#ansi.ANSI.getch">getch</a></code></li>
+<li><code><a title="ansi.ANSI.keypad_sequence" href="#ansi.ANSI.keypad_sequence">keypad_sequence</a></code></li>
+<li><code><a title="ansi.ANSI.next_line" href="#ansi.ANSI.next_line">next_line</a></code></li>
+<li><code><a title="ansi.ANSI.reset" href="#ansi.ANSI.reset">reset</a></code></li>
+<li><code><a title="ansi.ANSI.scroll_down" href="#ansi.ANSI.scroll_down">scroll_down</a></code></li>
+<li><code><a title="ansi.ANSI.scroll_region" href="#ansi.ANSI.scroll_region">scroll_region</a></code></li>
+<li><code><a title="ansi.ANSI.scroll_up" href="#ansi.ANSI.scroll_up">scroll_up</a></code></li>
+<li><code><a title="ansi.ANSI.set_attributes" href="#ansi.ANSI.set_attributes">set_attributes</a></code></li>
+<li><code><a title="ansi.ANSI.set_color" href="#ansi.ANSI.set_color">set_color</a></code></li>
+<li><code><a title="ansi.ANSI.set_scroll_region" href="#ansi.ANSI.set_scroll_region">set_scroll_region</a></code></li>
+<li><code><a title="ansi.ANSI.set_style" href="#ansi.ANSI.set_style">set_style</a></code></li>
+<li><code><a title="ansi.ANSI.style" href="#ansi.ANSI.style">style</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="ansi.Cursor" href="#ansi.Cursor">Cursor</a></code></h4>
+<ul class="two-column">
+<li><code><a title="ansi.Cursor.coord" href="#ansi.Cursor.coord">coord</a></code></li>
+<li><code><a title="ansi.Cursor.get_coord" href="#ansi.Cursor.get_coord">get_coord</a></code></li>
+<li><code><a title="ansi.Cursor.hide" href="#ansi.Cursor.hide">hide</a></code></li>
+<li><code><a title="ansi.Cursor.restore" href="#ansi.Cursor.restore">restore</a></code></li>
+<li><code><a title="ansi.Cursor.save" href="#ansi.Cursor.save">save</a></code></li>
+<li><code><a title="ansi.Cursor.set_coord" href="#ansi.Cursor.set_coord">set_coord</a></code></li>
+<li><code><a title="ansi.Cursor.show" href="#ansi.Cursor.show">show</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
