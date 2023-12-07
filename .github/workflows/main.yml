@@ -1,9 +1,7 @@
 name: Lint and format
 on: push
 env:
-  SRC_FILE: '*.py'
-permissions:
-  contents: write
+  SRC_FILES: '*.py'
 jobs:
   report:
     runs-on: ubuntu-latest
@@ -13,4 +11,4 @@ jobs:
       - name: Install ruff
         run: pip3 install ruff
       - name: Check lint and format
-        run: python3 -m ruff check $SRC_FILE
+        run: python3 -m ruff check $SRC_FILES
