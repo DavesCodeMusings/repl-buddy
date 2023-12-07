@@ -1,6 +1,7 @@
-from sys import stdin, stdout, exit
+from sys import stdout, exit
 from ansi import ANSI
 from text_buffer import TextBuffer
+
 
 class Femto(TextBuffer):
     KEY_CTRL_N = 0x0E
@@ -49,7 +50,7 @@ class Femto(TextBuffer):
         current_cursor = str(self.terminal.cursor)
         self.terminal.cursor.save()
         self.terminal.cursor.hide()
-        self.terminal.cursor.coord = (self.terminal.lines, self.terminal.cols-16)
+        self.terminal.cursor.coord = (self.terminal.lines, self.terminal.cols - 16)
         self.terminal.clear_line(before_cursor=False, after_cursor=True)
         self.terminal.style = ANSI.DIM
         stdout.write(current_cursor)
@@ -59,52 +60,52 @@ class Femto(TextBuffer):
 
     def _refresh_screen(self):
         self.terminal.clear(clear_scrollback=True)
-        self._set_title(self.filename or '(none)')
-        self.terminal.cursor.coord = (2,1)
-        for line_num in range(1, self.terminal.lines-1):
+        self._set_title(self.filename or "(none)")
+        self.terminal.cursor.coord = (2, 1)
+        for line_num in range(1, self.terminal.lines - 1):
             line = self.get_line(line_num)
-            if (line != None):
+            if line is not None:
                 stdout.write(line)
                 if line_num < self.terminal.lines - 2:
-                    stdout.write('\n')
-        self._set_status('[^N]ew [^R]ead [^W]rite e[^X]it')
+                    stdout.write("\n")
+        self._set_status("[^N]ew [^R]ead [^W]rite e[^X]it")
         self._show_coords()
 
     def _new_buffer_dialog(self):
-        if (self._buffer != ''):
-            prompt = 'Clear buffer [y/N]? '
+        if self._buffer != "":
+            prompt = "Clear buffer [y/N]? "
             confirm = self._get_input(prompt)
-            if (confirm == 'y' or confirm == 'Y'):
+            if confirm == "y" or confirm == "Y":
                 self.purge()
-            self.filename = ''
+            self.filename = ""
             self._refresh_screen()
 
     def _read_file_dialog(self):
-        self.filename = self._get_input('Read filename: ')
+        self.filename = self._get_input("Read filename: ")
         self.load(self.filename)
         self._refresh_screen()
 
     def _write_file_dialog(self):
-        if (self.filename):
-            prompt = 'Write filename [{}]: '.format(self.filename)
+        if self.filename:
+            prompt = "Write filename [{}]: ".format(self.filename)
             filename = self._get_input(prompt)
-            if (filename != ''):
+            if filename != "":
                 self.filename = filename
         else:
-            while (self.filename == ''):
-                prompt = 'Write as filename: '
+            while self.filename == "":
+                prompt = "Write as filename: "
                 self.filename = self._get_input(prompt)
         self.save(self.filename)
         self._refresh_screen()
 
     def _exit_dialog(self):
-        if (self._buffer != ''):
-            prompt = 'Exit [y/N]? '
+        if self._buffer != "":
+            prompt = "Exit [y/N]? "
             confirm = self._get_input(prompt)
-            if (confirm == 'y' or confirm == 'Y'):
+            if confirm == "y" or confirm == "Y":
                 del self.terminal.scroll_region
                 self.terminal.clear(clear_scrollback=True)
-                self.terminal.cursor.coord = (1,1)
+                self.terminal.cursor.coord = (1, 1)
                 exit(0)
             else:
                 self._refresh_screen()
@@ -113,13 +114,13 @@ class Femto(TextBuffer):
     def cursor_move(self, key_code):
         cursor_row, cursor_col = self.terminal.cursor.coord
         if key_code == ANSI.KEY_RIGHT:
-            cursor_col +=1
+            cursor_col += 1
         elif key_code == ANSI.KEY_LEFT:
-            cursor_col -=1
+            cursor_col -= 1
         elif key_code == ANSI.KEY_DOWN:
-            cursor_row +=1
+            cursor_row += 1
         elif key_code == ANSI.KEY_UP:
-            cursor_row -=1
+            cursor_row -= 1
         cursor_row = max(cursor_row, 2)  # Row 1 is title bar
         cursor_row = min(cursor_row, self.terminal.lines - 1)  # Last row is status bar
         cursor_col = max(cursor_col, 1)
@@ -129,9 +130,9 @@ class Femto(TextBuffer):
 
     def screen_scroll(self, key_code):
         if key_code == ANSI.KEY_NPAGE:
-            self._current_line += (self.terminal.lines - 2)
+            self._current_line += self.terminal.lines - 2
         elif key_code == ANSI.KEY_PPAGE:
-            self._current_line -= (self.terminal.lines - 2)
+            self._current_line -= self.terminal.lines - 2
         self._current_line = max(self._current_line, 1)
         self._current_line = min(self._current_line, len(self._buffer))
         self._refresh_screen()
@@ -151,7 +152,7 @@ class Femto(TextBuffer):
             Femto.KEY_CTRL_N: self._new_buffer_dialog,
             Femto.KEY_CTRL_R: self._read_file_dialog,
             Femto.KEY_CTRL_W: self._write_file_dialog,
-            Femto.KEY_CTRL_X: self._exit_dialog
+            Femto.KEY_CTRL_X: self._exit_dialog,
         }
 
         while True:
