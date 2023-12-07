@@ -1,21 +1,23 @@
 from sys import stdout
 from re import search
 
+
 class TextBuffer:
     """
     Functions for loading, saving and manipulating text editor buffers.
     Lines start from 1 (not 0) to be consistent with editor numbering.
     """
+
     def __init__(self, filename=None):
         self._buffer = []
         self._is_dirty = False
         self.verbose = True
         self.filename = filename
-        if filename != None:
+        if filename is not None:
             self.load(filename)
 
     def __str__(self):
-        return '\n'.join(self._buffer)    
+        return "\n".join(self._buffer)
 
     def delete_line(self, line_num):
         """
@@ -46,12 +48,12 @@ class TextBuffer:
         """
         found = None
         line_num = None  # in case start > buffer length
-        for line_num in range(start, len(self._buffer)+1):
+        for line_num in range(start, len(self._buffer) + 1):
             line = self.get_line(line_num)
             found = search(expr, line)
-            if found != None:
+            if found is not None:
                 break
-        return line_num if (found !=None) else None
+        return line_num if (found is not None) else None
 
     def insert_line(self, line_num, text):
         """
@@ -61,7 +63,7 @@ class TextBuffer:
         if line_num < 1:
             return False
         buffer_index = line_num - 1
-        self._buffer.insert(buffer_index, text.rstrip('\r\n'))
+        self._buffer.insert(buffer_index, text.rstrip("\r\n"))
         self._is_dirty = True
 
     def update_line(self, line_num, text):
@@ -69,21 +71,21 @@ class TextBuffer:
         Replace the line indicated by the line number with new text.
         """
         buffer_index = line_num - 1
-        self._buffer[buffer_index] = text.rstrip('\r\n')
+        self._buffer[buffer_index] = text.rstrip("\r\n")
         self._is_dirty = True
 
     def copy_range(self, start, stop, dest):
         """
         Copy lines start..stop after line given by dest.
         """
-        self._buffer[dest:dest] = self._buffer[start-1:stop]
+        self._buffer[dest:dest] = self._buffer[start - 1 : stop]
         self._is_dirty = True
 
     def delete_range(self, start, stop):
         """
         Remove the lines from start..stop.
         """
-        del self._buffer[start-1:stop]
+        del self._buffer[start - 1 : stop]
         self.is_dirty = True
 
     def move_range(self, start, stop, dest):
@@ -92,9 +94,9 @@ class TextBuffer:
         """
         self.copy_range(start, stop, dest)
         offset = stop - start + 1 if (dest < start) else 0
-        self.delete_range(start+offset, stop+offset)
+        self.delete_range(start + offset, stop + offset)
         self.is_dirty = True
-        
+
     def _read_file_line(self, file_handle):
         """
         Read from a file one line at a time, yeilding lines to reduce
@@ -104,7 +106,7 @@ class TextBuffer:
             line = file_handle.readline()
             if line:
                 yield line
-            else: # empty line means end of the file
+            else:  # empty line means end of the file
                 return
 
     def load(self, filename):
@@ -112,39 +114,43 @@ class TextBuffer:
         Read file contents into buffer while stripping end of line characters.
         """
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 for line in self._read_file_line(f):
-                    self._buffer.append(line.rstrip('\r\n'))
+                    self._buffer.append(line.rstrip("\r\n"))
         except Exception as ex:
-            if self.verbose == True:
-                stdout.write('{}: {}\n'.format(filename, ex))
+            if self.verbose is True:
+                stdout.write("{}: {}\n".format(filename, ex))
             return False
         else:
             self.filename = filename
             self._is_dirty = False
-            if self.verbose == True:
-                stdout.write('{:d} lines read from {:s}\n'.format(len(self._buffer), filename))
+            if self.verbose is True:
+                stdout.write(
+                    "{:d} lines read from {:s}\n".format(len(self._buffer), filename)
+                )
             return True
 
-    def save(self, filename=None, eol_marker='\n'):
+    def save(self, filename=None, eol_marker="\n"):
         """
         Write contents of buffer to filename by adding end of line character(s).
         """
-        if filename == None:
+        if filename is None:
             filename = self.filename
         try:
-            with open(filename, 'w') as f:
+            with open(filename, "w") as f:
                 for line in self._buffer:
                     f.write(line + eol_marker)
         except Exception as ex:
-            if self.verbose == True:
-                stdout.write('{}: {}\n'.format(filename, ex))
+            if self.verbose is True:
+                stdout.write("{}: {}\n".format(filename, ex))
             return False
         else:
             self.filename = filename
             self._is_dirty = False
-            if self.verbose == True:
-                stdout.write('{:d} lines written to {:s}\n'.format(len(self._buffer), filename))
+            if self.verbose is True:
+                stdout.write(
+                    "{:d} lines written to {:s}\n".format(len(self._buffer), filename)
+                )
             return True
 
     def purge(self):
