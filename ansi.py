@@ -11,30 +11,31 @@ References:
     https://www2.ccs.neu.edu/research/gpc/VonaUtils/vona/terminal/vtansi.htm
 """
 
+
 class Cursor:
     def __init__(self):
         pass
 
     def __str__(self):
         line, col = self.get_coord()
-        return 'Ln: {:d}, Col: {:d}'.format(line, col)
+        return "Ln: {:d}, Col: {:d}".format(line, col)
 
     def get_coord(self):
         """
         Return cursor (line, col) coordinates as a tuple.
         """
-        stdout.write(ANSI.CSI + '6n')
-        reply = ''  # Expecting reply with no newline in the form: 'ESC[{line};{col}R'
+        stdout.write(ANSI.CSI + "6n")
+        reply = ""  # Expecting reply with no newline in the form: 'ESC[{line};{col}R'
         while True:
             ch = stdin.read(1)
             reply += ch
-            if (ch == 'R'):
+            if ch == "R":
                 break
 
         reply = reply.lstrip(ANSI.CSI)
-        if (match('[0-9]+;[0-9]+R', reply)):
-            reply = reply.rstrip('R')
-            line, col = reply.split(';')
+        if match("[0-9]+;[0-9]+R", reply):
+            reply = reply.rstrip("R")
+            line, col = reply.split(";")
         else:
             line, col = (0, 0)  # Coordinates are 1-based, so (0,0) is impossible.
 
@@ -45,7 +46,7 @@ class Cursor:
         Move cursor to new line, col coordinates.
         """
         line, col = line_col
-        stdout.write(ANSI.CSI + '{:d};{:d}H'.format(line, col))
+        stdout.write(ANSI.CSI + "{:d};{:d}H".format(line, col))
 
     coord = property(get_coord, set_coord)
 
@@ -53,31 +54,31 @@ class Cursor:
         """
         Make the cursor visible on the terminal screen.
         """
-        stdout.write(ANSI.CSI + '?25h')
+        stdout.write(ANSI.CSI + "?25h")
 
     def hide(self):
         """
         Remove the cursor from the screen.
         """
-        stdout.write(ANSI.CSI + '?25l')
+        stdout.write(ANSI.CSI + "?25l")
 
     def save(self):
         """
         Ask terminal to save the cursor position, text attributes, and colors.
         """
-        stdout.write(ANSI.ESC + '7')
+        stdout.write(ANSI.ESC + "7")
 
     def restore(self):
         """
         Restore the previously saved position, attributes, and colors.
         """
-        stdout.write(ANSI.ESC + '8')
+        stdout.write(ANSI.ESC + "8")
 
 
 class ANSI:
     # Escape sequences
-    ESC = '\x1B'
-    CSI = ESC + '['     # Control Sequence Introducer
+    ESC = "\x1B"
+    CSI = ESC + "["  # Control Sequence Introducer
 
     # Text attibutes
     NORMAL = 0  # cancel all attributes and colors
@@ -121,22 +122,22 @@ class ANSI:
     KEY_END = 0x168
 
     keypad_sequence = {
-        'A': KEY_UP,
-        'B': KEY_DOWN,
-        'C': KEY_RIGHT,
-        'D': KEY_LEFT,
-        'F': KEY_END,
-        'H': KEY_HOME,
-        '1~': KEY_HOME,
-        '2~': KEY_IC,
-        '3~': KEY_DC,
-        '4~': KEY_END,
-        '5~': KEY_PPAGE,
-        '6~': KEY_NPAGE,
-        '11~': KEY_F1,
-        '12~': KEY_F2,
-        '13~': KEY_F3,
-        '14~': KEY_F4,
+        "A": KEY_UP,
+        "B": KEY_DOWN,
+        "C": KEY_RIGHT,
+        "D": KEY_LEFT,
+        "F": KEY_END,
+        "H": KEY_HOME,
+        "1~": KEY_HOME,
+        "2~": KEY_IC,
+        "3~": KEY_DC,
+        "4~": KEY_END,
+        "5~": KEY_PPAGE,
+        "6~": KEY_NPAGE,
+        "11~": KEY_F1,
+        "12~": KEY_F2,
+        "13~": KEY_F3,
+        "14~": KEY_F4,
     }
 
     def __init__(self):
@@ -151,25 +152,25 @@ class ANSI:
         """
         Reset terminal and probe for terminal dimensions. Clears screen.
         """
-        stdout.write(ANSI.ESC + 'c')
-        self.cursor.coord = (999,999)  # It will stop at (last line, last col).
+        stdout.write(ANSI.ESC + "c")
+        self.cursor.coord = (999, 999)  # It will stop at (last line, last col).
         self.lines, self.cols = self.cursor.coord
-        self.cursor.coord = (1,1)
+        self.cursor.coord = (1, 1)
 
-    def clear(self,  before_cursor=True, after_cursor=True, clear_scrollback=False):
+    def clear(self, before_cursor=True, after_cursor=True, clear_scrollback=False):
         """
         Erase the screen, either the entire screen (default) or just the
         lines before/after the cursor line.
         """
-        if (clear_scrollback == True):
-            stdout.write(ANSI.CSI + '3J')
+        if clear_scrollback is True:
+            stdout.write(ANSI.CSI + "3J")
 
         if after_cursor and not before_cursor:
-            control_sequence = 'J'
+            control_sequence = "J"
         elif before_cursor and not after_cursor:
-            control_sequence = '1J'
+            control_sequence = "1J"
         elif after_cursor and before_cursor:
-            control_sequence = '2J'
+            control_sequence = "2J"
 
         stdout.write(ANSI.CSI + control_sequence)
 
@@ -182,18 +183,18 @@ class ANSI:
         if len(row_range) != 2:
             return False
         top, bottom = row_range
-        stdout.write(ANSI.CSI + '{:d};{:d}r'.format(top, bottom))
-    
+        stdout.write(ANSI.CSI + "{:d};{:d}r".format(top, bottom))
+
     def clear_scroll_region(self):
-        stdout.write(ANSI.CSI + 'r')
+        stdout.write(ANSI.CSI + "r")
 
     scroll_region = property(None, set_scroll_region, clear_scroll_region)
 
     def scroll_up(self):
-        stdout.write(ANSI.CSI + 'S')
+        stdout.write(ANSI.CSI + "S")
 
     def scroll_down(self):
-        stdout.write(ANSI.CSI + 'T')
+        stdout.write(ANSI.CSI + "T")
 
     ### Individual Lines ###
 
@@ -203,11 +204,11 @@ class ANSI:
         entire line (default) or before/after the cursor column.
         """
         if after_cursor and not before_cursor:
-            control_sequence = 'K'
+            control_sequence = "K"
         elif before_cursor and not after_cursor:
-            control_sequence = '1K'
+            control_sequence = "1K"
         elif after_cursor and before_cursor:
-            control_sequence = '2K'
+            control_sequence = "2K"
 
         stdout.write(ANSI.CSI + control_sequence)
 
@@ -215,7 +216,7 @@ class ANSI:
         """
         Go to the next line and position the cursor at the beginning.
         """
-        stdout.write(ANSI.CSI + 'E')
+        stdout.write(ANSI.CSI + "E")
 
     ### Individual Characters ###
 
@@ -227,18 +228,18 @@ class ANSI:
         if len(attributes_triplet != 3):
             return False
         style, fg_color, bg_color = attributes_triplet
-        control_sequence = '{:d};'.format(style) if style else ''
-        control_sequence += '{:d};'.format(fg_color+30) if fg_color else ''
-        control_sequence += '{:d};'.format(bg_color+40) if bg_color else ''
-        control_sequence = control_sequence.rstrip(';')
-        control_sequence += 'm'
+        control_sequence = "{:d};".format(style) if style else ""
+        control_sequence += "{:d};".format(fg_color + 30) if fg_color else ""
+        control_sequence += "{:d};".format(bg_color + 40) if bg_color else ""
+        control_sequence = control_sequence.rstrip(";")
+        control_sequence += "m"
         stdout.write(ANSI.CSI + control_sequence)
 
     def clear_attributes(self):
         """
         Reset text attributes and colors back to default.
         """
-        stdout.write(ANSI.CSI + 'm')
+        stdout.write(ANSI.CSI + "m")
 
     attributes = property(None, set_attributes, clear_attributes)
 
@@ -250,21 +251,21 @@ class ANSI:
         if len(color_pair) != 2:
             return False
         fg_color, bg_color = color_pair
-        stdout.write(ANSI.CSI + '{:d};{:d}m'.format(fg_color+30, bg_color+40))
+        stdout.write(ANSI.CSI + "{:d};{:d}m".format(fg_color + 30, bg_color + 40))
 
     def clear_color(self):
         """
         Reset colors to default without affecting attributes (bold, etc.)
         """
-        stdout.write(ANSI.CSI + '39;49m')  # 39;49 represent default.
+        stdout.write(ANSI.CSI + "39;49m")  # 39;49 represent default.
 
     color = property(None, set_color, clear_color)
 
     def set_style(self, style_attr):
-        stdout.write(ANSI.CSI + '{:d}m'.format(style_attr))
+        stdout.write(ANSI.CSI + "{:d}m".format(style_attr))
 
     def clear_style(self):
-        stdout.write(ANSI.CSI + ANSI.NORMAL + 'm')
+        stdout.write(ANSI.CSI + ANSI.NORMAL + "m")
 
     style = property(None, set_style, clear_style)
 
@@ -278,16 +279,18 @@ class ANSI:
         ch = None
         poll_obj = poll()
         poll_obj.register(stdin, POLLIN)
-        while (True):
+        while True:
             keypress = stdin.read(1) if poll_obj.poll(0) else None
-            if keypress != None:
-                if self.echo == True:
+            if keypress is not None:
+                if self.echo is True:
                     stdout.write(keypress)
                 ch = ord(keypress)
-                if ch != ANSI.KEY_ESC or self.use_keypad == False:  # Not an ESC sequence
+                if (
+                    ch != ANSI.KEY_ESC or self.use_keypad is False
+                ):  # Not an ESC sequence
                     break
-                elif stdin.read(1) == '[':  # ESC[ is Control Sequence Introducer
-                    sequence = ''
+                elif stdin.read(1) == "[":  # ESC[ is Control Sequence Introducer
+                    sequence = ""
                     while True:
                         s = stdin.read(1)
                         sequence += s
